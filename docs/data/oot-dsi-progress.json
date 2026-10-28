@@ -1,0 +1,3211 @@
+{
+  "schema_version": "1.0.0",
+  "projeto": {
+    "nome": "Ocarina of Time DSi",
+    "descricao": "Adaptação experimental nativa de The Legend of Zelda: Ocarina of Time para Nintendo DSi, em desenvolvimento. O 3D usa o geometry engine do DS; a matemática é em ponto fixo porque o ARM9 não tem FPU.",
+    "alvo": "TWiLight Menu++ / nds-bootstrap em modo DSi, sem FPU (matemática em ponto fixo no ARM9)",
+    "base_de_codigo": "Decompilação zeldaret/oot em C, embutida em game/oot e pinada no commit 14759abf9abb4295de142cdc1452998630ea70fb; adaptações próprias em source/gfx, source/nds, source/ui e source/main.c.",
+    "ambiente_medicao_padrao": "melonDS 1.1, modo DS, 67 MHz, janela 272x448, cartão SD emulado pelo DLDI FolderSync. Salvo indicação contrária, toda medida deste arquivo foi feita nesse ambiente.",
+    "versionamento": "A árvore de trabalho não tem histórico git utilizável (nenhum commit registrado). Não existe número de versão do port; o identificador estável de cada entrega é o OTD-NNN.",
+    "aviso_emulador": "Resultado de emulador não é medição de hardware físico. O portão de DSi real continua aberto para todas as entregas.",
+    "codigo_de_terceiros": [
+      {
+        "nome": "zeldaret/oot",
+        "papel": "Decompilação do jogo que fornece código de lógica, tipos, macros F3DEX2 e tabelas; é a base integrada, não código próprio do port.",
+        "versao_ou_referencia": "commit 14759abf9abb4295de142cdc1452998630ea70fb (main, 2026-10-18)",
+        "licenca": "ver repositório de origem; nenhum asset extraído é redistribuído por este projeto"
+      },
+      {
+        "nome": "devkitARM / libnds / libfat / maxmod / Calico",
+        "papel": "Toolchain e bibliotecas de plataforma do DS.",
+        "versao_ou_referencia": "devkitARM r68-1 (GCC 16.1.0), libnds 2.0.2, binutils 2.46.0, ndstool 2.3.1, Calico 1.2.0",
+        "licenca": "ver pacotes dkp-libs/dkp-windows"
+      },
+      {
+        "nome": "melonDS",
+        "papel": "Emulador usado para todas as validações registradas.",
+        "versao_ou_referencia": "1.1",
+        "licenca": "GPLv3"
+      }
+    ],
+    "creditos": [
+      {
+        "nome": "zeldaret/oot",
+        "papel": "decompilação em C integrada como base de código do jogo",
+        "versao_ou_referencia": "commit 14759abf9abb4295de142cdc1452998630ea70fb (main, 2026-10-18)",
+        "licenca": "licença do repositório de origem"
+      },
+      {
+        "nome": "source/gfx",
+        "papel": "código próprio do port: decodificador F3DEX2, tradução para o geometry engine, texturas, cache, combiner, viewport, recorte e seleção de mip",
+        "versao_ou_referencia": "árvore local sem identificador de versão",
+        "licenca": "licença declarada na raiz do projeto, quando houver"
+      },
+      {
+        "nome": "source/nds, source/ui, source/main.c",
+        "papel": "código próprio do port: plataforma, tempo, escalonador, memória, entrada, leitura de assets, telemetria e interface das duas telas",
+        "versao_ou_referencia": "árvore local sem identificador de versão",
+        "licenca": "licença declarada na raiz do projeto, quando houver"
+      },
+      {
+        "nome": "ferramentas/",
+        "papel": "código próprio: validação dos dados, geração da documentação, medidor de grão e recorte de captura",
+        "versao_ou_referencia": "árvore local sem identificador de versão",
+        "licenca": "licença declarada na raiz do projeto, quando houver"
+      },
+      {
+        "nome": "devkitARM",
+        "papel": "compilador e binutils para ARM9",
+        "versao_ou_referencia": "r68-1 (GCC 16.1.0), binutils 2.46.0",
+        "licenca": "licença do devkitPro"
+      },
+      {
+        "nome": "libnds",
+        "papel": "vídeo, interrupções, timers e console do DS",
+        "versao_ou_referencia": "2.0.2",
+        "licenca": "licença do devkitPro"
+      },
+      {
+        "nome": "libfat / DLDI",
+        "papel": "leitura do cartão SD no DS e [DLDI] FolderSync no emulador",
+        "versao_ou_referencia": "pacote dkp",
+        "licenca": "licença do devkitPro"
+      },
+      {
+        "nome": "maxmod",
+        "papel": "áudio (ainda não integrado ao jogo)",
+        "versao_ou_referencia": "pacote dkp",
+        "licenca": "licença do devkitPro"
+      },
+      {
+        "nome": "Calico",
+        "papel": "runtime de suporte do devkitPro",
+        "versao_ou_referencia": "1.2.0",
+        "licenca": "licença do devkitPro"
+      },
+      {
+        "nome": "ndstool",
+        "papel": "empacotamento do .nds",
+        "versao_ou_referencia": "2.3.1",
+        "licenca": "licença do devkitPro"
+      },
+      {
+        "nome": "melonDS",
+        "papel": "emulador usado em todas as validações; não é distribuído com o projeto",
+        "versao_ou_referencia": "1.1",
+        "licenca": "licença do projeto melonDS"
+      }
+    ],
+    "aviso_de_marca": "The Legend of Zelda e Ocarina of Time são marcas da Nintendo. Este é um projeto de engenharia independente, sem afiliação com a Nintendo.",
+    "aviso_de_assets": "Nenhuma cópia de referência, arquivo extraído do jogo ou tabela de assets é distribuído com este site. As capturas são evidência técnica do port em execução."
+  },
+  "estados": {
+    "planejado": {
+      "rotulo": "Planejado",
+      "descricao": "Escopo definido; nenhum código da entrega foi escrito."
+    },
+    "em_implementacao": {
+      "rotulo": "Em implementação",
+      "descricao": "Código em andamento; nenhuma medição fechada."
+    },
+    "implementado": {
+      "rotulo": "Implementado",
+      "descricao": "Compila e roda, mas não passou por teste registrado na condição real de uso."
+    },
+    "testado_computador": {
+      "rotulo": "Testado no computador",
+      "descricao": "Validado por autoteste ou verificação fora do DS (por exemplo, no host)."
+    },
+    "testado_emulador": {
+      "rotulo": "Testado em emulador",
+      "descricao": "Validado no melonDS 1.1 em modo DS, com evidência registrada. Não é hardware físico."
+    },
+    "testado_hardware": {
+      "rotulo": "Testado em hardware físico",
+      "descricao": "Validado em DSi real via TWiLight Menu++ / nds-bootstrap. Nenhuma entrega chegou aqui."
+    },
+    "parcial_bloqueado_regressao": {
+      "rotulo": "Parcial, bloqueado ou com regressão conhecida",
+      "descricao": "Entrega incompleta, impedida por dependência externa ou com defeito conhecido registrado."
+    }
+  },
+  "ambiente_padrao": {
+    "emulador": "melonDS 1.1",
+    "modo": "DS mode",
+    "clock_mhz": 67,
+    "janela": "272x448; painel 3D em X 8, Y 56, 256x192",
+    "hardware_fisico": false,
+    "observacao": "Todas as entregas registradas foram validadas em emulador; nenhuma foi validada em DSi físico."
+  },
+  "medicoes_definicoes": [
+    {
+      "chave": "fps",
+      "nome": "FPS exibido",
+      "definicao": "Quadros terminados dentro da última janela de 1 segundo do relógio de barramento (BUS_CLOCK), impresso na linha 8 da consola e atualizado no ecrã a 4 Hz.",
+      "como_medido": "perfEnd incrementa framesInSec a cada iteração; quando now − secondStart ≥ BUS_CLOCK, fps = framesInSec e a contagem recomeça. Cada iteração termina em swiWaitForVBlank(), então o valor não passa de 60 e é sempre inteiro.",
+      "limitacoes": "É um inteiro por janela, não uma média histórica; esconde variação dentro da janela e diferenças abaixo de 1 FPS. É o FPS do loop no emulador, não uma garantia no DSi real."
+    },
+    {
+      "chave": "taxa_simulacao_hz",
+      "nome": "Taxa de simulação",
+      "definicao": "Ticks de lógica do jogo por segundo, independentes do desenho.",
+      "como_medido": "Contador incrementado por IRQ de VBlank e convertido em ticks de 3 quadros (20 Hz); a taxa real é recalculada a cada segundo.",
+      "limitacoes": "Mede o escalonador, não o custo de render; um quadro perdido devolve mais de um tick e esconde a queda de FPS."
+    },
+    {
+      "chave": "tempo_quadro_ms",
+      "nome": "Tempo de quadro (f)",
+      "definicao": "Intervalo entre duas chamadas consecutivas a perfEnd, ou seja a última iteração inteira do loop: entrada, render, texto do HUD, lógica e espera de VBlank.",
+      "como_medido": "timeTicks() no fim de cada iteração, subtraído do anterior antes da conversão para microssegundos; impresso como f na linha 8. É a última iteração, não a média.",
+      "limitacoes": "É o período do loop, não o tempo de GPU; inclui telemetria, lógica e a espera de VBlank. Não é comparável entre sessões sem um par A/B da mesma rodada. O recorde de f desde o boot é impresso como w: é marca d'água, não o custo atual, e inclui os quadros de carregamento."
+    },
+    {
+      "chave": "tempo_render_ms",
+      "nome": "Tempo de render (s)",
+      "definicao": "Tempo de CPU entre o início da montagem da cena e a submissão completa da display list ao geometry engine.",
+      "como_medido": "Par de leituras do timer de hardware em volta de geDrawList; impresso como s na linha 8.",
+      "limitacoes": "Não inclui o rasterizador: o custo de preenchimento de pixel não aparece aqui. É a métrica usada nas comparações A/B de otimização do motor."
+    },
+    {
+      "chave": "tempo_submissao_ms",
+      "nome": "Tempo de submissão",
+      "definicao": "Parcela do tempo de render gasta em chamadas de envio ao GE (matrizes, vértices, texturas).",
+      "como_medido": "Acumulador das chamadas de submissão dentro do render; foi o indicador que expôs a espera de 236 ms por polls de MMIO.",
+      "limitacoes": "No emulador, cada acesso a MMIO tem custo diferente do hardware; serve para comparar builds, não para prever o DSi real."
+    },
+    {
+      "chave": "grao",
+      "nome": "Grão do painel (métrica própria)",
+      "definicao": "Média do módulo da diferença de luminância entre pixels vizinhos horizontais no painel 3D (indicador de ruído de alta frequência). Não é uma medida de cor.",
+      "como_medido": "Recorte _topbig (painel 256x192 ampliado 2x) processado por ferramentas/speck2.py: remove a duplicação da ampliação, converte cada pixel para luminância 0,30R+0,59G+0,11B, ignora pares em que ambos os pixels têm luminância abaixo de 8 e devolve a média de |luminância(x)-luminância(x+1)|.",
+      "limitacoes": "Só luminância, sem calibração publicada contra referência externa; ignora pares escuros e por isso pode subestimar ruído em áreas escuras. Textura detalhada e borda de geometria também aumentam o número: só é comparável entre capturas do mesmo ângulo, câmera e build."
+    },
+    {
+      "chave": "contagem",
+      "nome": "Contagem de eventos",
+      "definicao": "Número de ocorrências de um evento instrumentado no HUD (triângulos, binds, uploads, acertos de cache, recusas, despejos).",
+      "como_medido": "Contadores incrementados no tradutor e impressos nas linhas 18..22 da consola.",
+      "limitacoes": "Contagem não mede tempo; dois contadores que se movem juntos não provam causalidade."
+    },
+    {
+      "chave": "percentual",
+      "nome": "Variação percentual",
+      "definicao": "Diferença relativa entre duas medições da mesma grandeza, na mesma condição.",
+      "como_medido": "Calculada a partir dos valores absolutos registrados; nunca a partir de estimativa.",
+      "limitacoes": "Só vale quando build, cena, câmera e instrumentação são equivalentes."
+    },
+    {
+      "chave": "vazao_mb_s",
+      "nome": "Vazão de dados",
+      "definicao": "Bytes processados por segundo em um caminho de dados (Yaz0, leitura de SD).",
+      "como_medido": "Tamanho do blob dividido pelo tempo de relógio de hardware do caminho completo.",
+      "limitacoes": "No emulador o tempo de SD não existe; vazão de leitura real só pode ser medida em hardware."
+    }
+  ],
+  "entregas": [
+    {
+      "id": "OTD-001",
+      "tipo": "entrega",
+      "titulo": "Sonda de hardware: o DSi emulado entrega DSi mode, RAM e duas telas",
+      "data": "2026-10-26",
+      "frente": "jogo",
+      "fase": "0",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null,
+        "observacao": "O build é OcarinaDsi.nds, compilado com devkitARM r68-1 e -Wall -Wextra sem avisos."
+      },
+      "resumo": "Antes de portar o jogo, o projeto provou que o ambiente do DSi existe: modo DSi, memória, clock, cartão SD e as duas telas. No emulador em modo DS a sonda confirma a base e mede os limites; a confirmação em DSi real segue pendente.",
+      "estudo_engenharia": {
+        "problema": "Sem saber se o DSi entrega DSi mode, 16 MB de RAM, clock alto, SD e duas telas simultâneas, qualquer decisão de arquitetura seria aposta.",
+        "investigacao": "Sonda em source/nds/probe.c lendo SCFG_CLK/SCFG_EXT, heap e um padrão esparso de RAM; benchmark de SD em source/nds/bench.c; base de tempo em timer de hardware porque tickGetCount do Calico não avança nos timers disponíveis.",
+        "decisao": "Foi adotado MODE_0_3D no motor principal com grade de 1.024 quads (2.048 triângulos, limite do hardware) e MODE_0_2D no motor secundário com console e sprites; toque por OBJ com hit-test.",
+        "resultado": "No melonDS em modo DS: 60 fps com 2.048 triângulos, frame de 16,7 ms, pior quadro 29 ms, submissão de ~0,4 ms, toque acertando a célula (3,3). DSi mode, porém, aparece como NO e SCFG_CLK nega o boost, como esperado em modo DS.",
+        "limitacao": "Tudo foi medido em modo DS. Confirmar DSi mode, heap de ~15,9 MB, bit de 134 MHz e SD real exige um DSi físico; sem isso o projeto para."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "Tudo foi medido em modo DS. Confirmar DSi mode, heap de ~15,9 MB, bit de 134 MHz e SD real exige um DSi físico; sem isso o projeto para."
+      ],
+      "evidencias": [],
+      "medicoes": [
+        {
+          "indicador": "fps",
+          "valor": 60,
+          "unidade": "fps",
+          "condicao": {
+            "cena": "grade de 1.024 quads",
+            "camera": "fixa",
+            "build": "sonda inicial",
+            "configuracao": "modo DS, 2.048 triângulos"
+          },
+          "metodo": "overlay de performance no emulador",
+          "observacao": ""
+        },
+        {
+          "indicador": "tempo_quadro_ms",
+          "valor": 16.7,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "grade de 1.024 quads",
+            "camera": "fixa",
+            "build": "sonda inicial",
+            "configuracao": "modo DS"
+          },
+          "metodo": "timer de hardware; pior quadro 29 ms",
+          "observacao": ""
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "boot e desenho",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "main engine a 60 fps, sub engine sem corrupção, toque correto"
+        }
+      ],
+      "problemas": [
+        {
+          "id": "OTD-001-P1",
+          "descricao": "DSi mode e boost de clock não puderam ser confirmados sem hardware físico.",
+          "estado": "pendente"
+        },
+        {
+          "id": "OTD-001-P2",
+          "descricao": "Benchmark de SD não executado no emulador por falta de cartão montado.",
+          "estado": "pendente"
+        }
+      ],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Rodar a sonda em DSi real e registrar modo, heap, clock e vazão de SD."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_JOGO.md",
+          "secao": "Fase 0 — Concluída no emulador; portão de hardware pendente (2026-10-26)"
+        }
+      ],
+      "subestado": "portão de hardware físico bloqueado: nenhum DSi real testado",
+      "dependencias": [
+        "DSi físico com TWiLight Menu++/nds-bootstrap"
+      ]
+    },
+    {
+      "id": "OTD-002",
+      "tipo": "entrega",
+      "titulo": "Base do loop: tempo, escalonador de 20 Hz, memória e telemetria",
+      "data": "2026-10-26",
+      "frente": "jogo",
+      "fase": "1",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "O loop do jogo passou a rodar sobre a camada do DS com tempo confiável, lógica a 20 Hz, uma arena de memória própria e telemetria que não mente a cada dois minutos. O decompressor Yaz0 entrou em memória e em streaming.",
+      "estudo_engenharia": {
+        "problema": "O loop precisava de base de tempo que não estourasse, de um escalonador que não derivasse e de uma arena alinhada para o geometry engine; a telemetria inicial reportava um pior quadro falso a cada 128,2 s.",
+        "investigacao": "Teste do Yaz0 com vetor próprio e decoder independente em Node; medição do escalonador em janela de ~61,5 s; comparação do heap por sbrk contra mallinfo, que devolvia zeros nesta toolchain.",
+        "decisao": "Base de tempo em timer 0/1 em cascata com subtração antes da conversão; escalonador de 20 Hz por IRQ de VBlank; arena linear de 3,3 MB alinhada a 32 B, reservando 384 KB para libnds/libfat/console.",
+        "resultado": "Yaz0 em memória a 3,9 MB/s e em streaming de 1 KB a 3,5 MB/s; escalonador medido em 1.231 ticks em ~61,5 s, ou 20 Hz; frame de 16,7 ms e pior quadro de 29 ms após vários minutos.",
+        "limitacao": "Nada foi lido do SD ainda: o adaptador de arquivo entra com nds/fs. A vazão de SD do emulador não existe e só pode ser medida em hardware."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "Nada foi lido do SD ainda: o adaptador de arquivo entra com nds/fs. A vazão de SD do emulador não existe e só pode ser medida em hardware."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-002",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [
+        {
+          "indicador": "taxa_simulacao_hz",
+          "valor": 20,
+          "unidade": "Hz",
+          "condicao": {
+            "cena": "loop sem 3D",
+            "camera": "n/a",
+            "build": "base do loop",
+            "configuracao": "modo DS"
+          },
+          "metodo": "1.231 ticks em ~61,5 s de janela medida",
+          "observacao": ""
+        },
+        {
+          "indicador": "vazao_mb_s",
+          "valor": 3.5,
+          "unidade": "MB/s",
+          "condicao": {
+            "cena": "blob de teste Yaz0 de 10 KB",
+            "camera": "n/a",
+            "build": "base do loop",
+            "configuracao": "janela de streaming de 1 KB"
+          },
+          "metodo": "tamanho do blob dividido pelo tempo de timer de hardware",
+          "observacao": "Em memória a mesma carga mede 3,9 MB/s."
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "decodificador Yaz0",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz + decoder independente em Node",
+          "resultado": "hash FNV-1a idêntico dentro e fora do build"
+        },
+        {
+          "tipo": "escalonador",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "20 Hz mantidos; quadro perdido devolve mais de um tick sem derivar"
+        }
+      ],
+      "problemas": [
+        {
+          "id": "OTD-002-P1",
+          "descricao": "Contador de ticks de 32 bits estourava a cada 128,2 s e criava pior quadro falso; corrigido convertendo após a subtração.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-002-P2",
+          "descricao": "Build de referência do decomp não validado por exigir a cópia de referência do usuário.",
+          "estado": "pendente"
+        }
+      ],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Camada nds/fs sobre libfat e substituição do restante da libultra."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_JOGO.md",
+          "secao": "Fase 1 — Base do loop: concluída no emulador; portão de hardware pendente (2026-10-26)"
+        }
+      ],
+      "dependencias": [
+        "OTD-001"
+      ]
+    },
+    {
+      "id": "OTD-003",
+      "tipo": "entrega",
+      "titulo": "Decodificador F3DEX2: ler display lists do decomp no computador",
+      "data": "2026-10-26",
+      "frente": "motor",
+      "fase": "2",
+      "estado": "testado_computador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "O renderizador começou pela parte que não depende de cópia de referência nem de hardware: interpretar display lists no formato que o decomp realmente emite, com um autoteste verificando os comandos.",
+      "estudo_engenharia": {
+        "problema": "Sem decodificador confiável de F3DEX2, nenhuma geometria vinda do jogo poderia ser traduzida para o geometry engine do DS.",
+        "investigacao": "Leitura das macros e tipos que o decomp emite e construção de um autoteste com comandos representativos antes de qualquer envio ao GE.",
+        "decisao": "Separar o decodificador da tradução: o decodificador interpreta a lista e o backend traduz cada comando.",
+        "resultado": "Autoteste do decodificador aprovado no host; o caminho ficou pronto para receber a primeira lista desenhada.",
+        "limitacao": "Ainda não havia lista desenhada na tela nem verificação no emulador; esta entrega é testada apenas no computador."
+      },
+      "validacao": {
+        "ambiente": "computador (host), sem emulador",
+        "modo": null,
+        "emulador": null,
+        "clock_mhz": null,
+        "hardware_fisico": false,
+        "observacao": "Validado por autoteste ou verificação fora do DS."
+      },
+      "limitacoes": [
+        "Ainda não havia lista desenhada na tela nem verificação no emulador; esta entrega é testada apenas no computador."
+      ],
+      "evidencias": [],
+      "medicoes": [],
+      "testes": [
+        {
+          "tipo": "autoteste do decodificador",
+          "ambiente": "computador (host)",
+          "resultado": "comandos F3DEX2 decodificados conforme o esperado"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Desenhar a primeira display list pelo pipeline do DS."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 2 — Preparação: decodificador F3DEX2 (2026-10-26)"
+        }
+      ]
+    },
+    {
+      "id": "OTD-004",
+      "tipo": "entrega",
+      "titulo": "Primeira display list F3DEX2 desenhada pelo geometry engine",
+      "data": "2026-10-26",
+      "frente": "motor",
+      "fase": "2",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "A geometria deixou de ser a transformação fixa do main.c e passou a vir de uma display list, desenhada pelo pipeline 3D do DS.",
+      "estudo_engenharia": {
+        "problema": "A tela mostrava apenas contagens de triângulos; era preciso provar que uma lista F3DEX2 podia virar pixels pelo geometry engine.",
+        "investigacao": "Tradução de VTX/TRI1/TRI2 para chamadas do GE e conferência visual no emulador.",
+        "decisao": "Usar o pipeline do DS diretamente, não as chamadas de conveniência do topRender.",
+        "resultado": "Lista desenhada e visível no painel de cima, com contagem de triângulos coerente.",
+        "limitacao": "A matriz ainda vinha do teste, não da lista; sem isso a geometria não tinha posição definida pelo jogo."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "A matriz ainda vinha do teste, não da lista; sem isso a geometria não tinha posição definida pelo jogo."
+      ],
+      "evidencias": [],
+      "medicoes": [],
+      "testes": [
+        {
+          "tipo": "desenho de display list",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "lista F3DEX2 visível no painel de cima"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Aplicar a matriz que vem dentro da display list."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 2 — Geometry engine: primeira display list na tela (2026-10-26)"
+        }
+      ],
+      "dependencias": [
+        "OTD-003"
+      ]
+    },
+    {
+      "id": "OTD-005",
+      "tipo": "entrega",
+      "titulo": "Matriz da display list aplicada no geometry engine",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "2",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "A geometria passou a ser posicionada pela matriz 16.16 que vem dentro da própria display list, incluindo a pilha de matrizes.",
+      "estudo_engenharia": {
+        "problema": "A lista era desenhada, mas a posição vinha de uma transformação fixa do main.c, não do jogo.",
+        "investigacao": "Conversão da matriz 16.16 para o formato 1.19.12 do GE, conferindo orientação e ordem de multiplicação.",
+        "decisao": "Converter sem transposição e respeitar G_MTX_PUSH/POP na pilha certa.",
+        "resultado": "A geometria passou a obedecer a matriz da lista; a emenda de rotação e translação ficou no lugar esperado.",
+        "limitacao": "A projeção ainda era fixa; faltava distinguir matriz de modelview e de projeção."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "A projeção ainda era fixa; faltava distinguir matriz de modelview e de projeção."
+      ],
+      "evidencias": [],
+      "medicoes": [],
+      "testes": [
+        {
+          "tipo": "matriz da display list",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "geometria posicionada pela matriz da lista"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Implementar G_MTX_PROJECTION e a pilha por tipo."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 2 — Matrizes da display list no GE (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-004"
+      ]
+    },
+    {
+      "id": "OTD-006",
+      "tipo": "entrega",
+      "titulo": "Projeção vinda da display list e pilha de matrizes por tipo",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "2",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "A projeção fixa do vídeo deixou de ser usada na cena 3D: G_MTX_PROJECTION passou a valer e o G_POPMTX devolve cada nível para a pilha em que foi empilhado.",
+      "estudo_engenharia": {
+        "problema": "A projeção fixa do video_top.c não serve para cena 3D e G_MTX_MUL era ignorado.",
+        "investigacao": "Derivação do formato de matriz e teste de projeção com o valor de near vindo da lista.",
+        "decisao": "Pilhas separadas para projeção e modelview, com G_MTX_MUL aplicado de verdade.",
+        "resultado": "A projeção da lista passou a controlar a cena e o near publicado pelo motor coincidiu com o esperado.",
+        "limitacao": "Recorte no plano perto e correção de profundidade ainda não existiam."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "Recorte no plano perto e correção de profundidade ainda não existiam."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-006",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [],
+      "testes": [
+        {
+          "tipo": "projeção e pilha",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "G_MTX_PROJECTION e G_POPMTX respeitados"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Texturas e combiner."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 2 — Projeção da display list e pilha por tipo de matriz (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-005"
+      ]
+    },
+    {
+      "id": "OTD-007",
+      "tipo": "entrega",
+      "titulo": "Texturas CI4 e CI8 com paleta por slot de TMEM",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "2",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "Os formatos indexados, que são a maior fatia das texturas de Ocarina of Time, passaram a virar textura no DS com paleta capturada de G_LOADTLUT.",
+      "estudo_engenharia": {
+        "problema": "Até aqui só RGBA16 virava textura; CI4 e CI8 exigiam guardar a paleta por slot de TMEM e casar o índice do tile de render com a glColorTableEXT do libnds.",
+        "investigacao": "Captura de G_LOADTLUT e correlação entre tile de render e paleta.",
+        "decisao": "Paleta armazenada por slot de TMEM, com o índice do tile resolvido no momento do desenho.",
+        "resultado": "Texturas CI4 e CI8 desenhadas com as cores corretas no painel.",
+        "limitacao": "O alpha de paleta ainda não era tratado; o GE do DS tem paleta de 15 bits, sem alpha."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "O alpha de paleta ainda não era tratado; o GE do DS tem paleta de 15 bits, sem alpha."
+      ],
+      "evidencias": [],
+      "medicoes": [],
+      "testes": [
+        {
+          "tipo": "texturas indexadas",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "CI4 e CI8 com paleta correta"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Cache de textura para não reenviar por quadro."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 2 — Texturas CI4/CI8 com paleta (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-004"
+      ]
+    },
+    {
+      "id": "OTD-008",
+      "tipo": "entrega",
+      "titulo": "Cache de textura com substituição LRU",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "2",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "O cache de textura ganhou substituição: reciclar um slot sem deixar geometria pendente apontando para a textura sobrescrita.",
+      "estudo_engenharia": {
+        "problema": "O cache tinha 8 slots fixos e nenhuma substituição; a nona textura de um quadro caía em texSkip, e o jogo alterna dezenas de texturas por quadro.",
+        "investigacao": "Análise de quando um slot pode ser reciclado com segurança em relação à geometria já enfileirada.",
+        "decisao": "Substituição LRU com pin por frame, para proteger o que o frame corrente ainda vai amostrar.",
+        "resultado": "Texturas passaram a ser recicladas sem corromper a geometria pendente.",
+        "limitacao": "O número de slots ainda era um palpite; a política de recusa em cache cheio ficava visível como triângulo sem textura."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "O número de slots ainda era um palpite; a política de recusa em cache cheio ficava visível como triângulo sem textura."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-008",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [],
+      "testes": [
+        {
+          "tipo": "reciclagem de cache",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "substituição LRU sem corrupção visível"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Aumentar a capacidade e investigar o despejo a meio do frame."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 2 — Despejo do cache de textura (LRU) (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-007"
+      ]
+    },
+    {
+      "id": "OTD-009",
+      "tipo": "entrega",
+      "titulo": "Combiner do ciclo 0 e viewport do N64",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "2",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "O tradutor deixou de ignorar G_SETCOMBINE e G_MOVEMEM: cada material passou a escolher seu modo (MODULATE, DECAL, SHADE) e a cena ganhou a área de renderização definida pelo jogo.",
+      "estudo_engenharia": {
+        "problema": "Toda geometria saía como texel vezes cor de vértice e no quadro inteiro, o que quebra o 2D do jogo (HUD, sombras, fumaça).",
+        "investigacao": "Mapeamento dos modos de combiner do ciclo 0 para o estágio fixo do GE e do viewport N64 para o do DS.",
+        "decisao": "Traduzir apenas o ciclo 0 e o viewport, deixando o resto explicitamente não coberto.",
+        "resultado": "Materiais MODULATE, DECAL e SHADE renderizados de forma distinta e viewport aplicado.",
+        "limitacao": "Ciclo 1, fontes ENV/PRIMITIVE e blending ainda não cobertos."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "Ciclo 1, fontes ENV/PRIMITIVE e blending ainda não cobertos."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-009",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [],
+      "testes": [
+        {
+          "tipo": "combiner e viewport",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "três modos de combiner distinguíveis na tela"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Alpha test e othermode."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 2 — Combiner (G_SETCOMBINE) e viewport (G_MOVEMEM) (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-007"
+      ]
+    },
+    {
+      "id": "OTD-010",
+      "tipo": "entrega",
+      "titulo": "Alpha do texel como recorte",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "2",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "Cercas, grama, penugens e mechas de cabelo deixaram de sair como retângulo sólido: o alpha do texel passou a recortar o pixel.",
+      "estudo_engenharia": {
+        "problema": "Materiais com texels de alpha 0 e alpha vindo do texel (CC_DecalRGBA) saíam como retângulo sólido, porque blending ainda não existia.",
+        "investigacao": "Mapeamento de G_ACMUX_TEXEL0 para GL_ALPHA_TEST em RGBA5551.",
+        "decisao": "Usar recorte por alpha no GE em vez de esperar por blending.",
+        "resultado": "Texéis de alpha 0 deixaram de pintar; os recortes apareceram no painel.",
+        "limitacao": "Blending translúcido de verdade ainda não existia, e o alpha de paleta CI não podia ser representado no GE."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "Blending translúcido de verdade ainda não existia, e o alpha de paleta CI não podia ser representado no GE."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-010",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [],
+      "testes": [
+        {
+          "tipo": "alpha test",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "texéis de alpha 0 recortados"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "OtherMode e blending por polígono."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 2 — Alpha do texel como recorte (`GL_ALPHA_TEST`) (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-009"
+      ]
+    },
+    {
+      "id": "OTD-011",
+      "tipo": "entrega",
+      "titulo": "OtherMode e blending translúcido por polígono",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "2",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "Água, névoa, magia e sombras do jogo dependem de render mode translúcido. O tradutor passou a ler OtherMode e a misturar cor por polígono com o alpha do vértice.",
+      "estudo_engenharia": {
+        "problema": "Materiais translúcidos do OoT usam G_ZMODE_XLU ou G_BL_ENABLE e tiram o fator de mistura do alpha do vértice (Ad0 = G_ACMUX_SHADE); nada disso era lido.",
+        "investigacao": "Leitura de G_SETOTHERMODE_H/L com sombra de flags e medição em pixels do fator resultante.",
+        "decisao": "Abrir lote por polígono translúcido com POLY_ALPHA e POLY_ID, e considerar opaco só quando ZMODE_OPA e a cor de blend do ciclo 1 não é CLR_MEM.",
+        "resultado": "Em pixels: alpha 16/31 resulta em 53 % do fonte e alpha 8/31 em 28 %.",
+        "limitacao": "Ciclo 1, fontes ENV/PRIMITIVE e recorte via paleta continuam não cobertos."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "Ciclo 1, fontes ENV/PRIMITIVE e recorte via paleta continuam não cobertos."
+      ],
+      "evidencias": [],
+      "medicoes": [
+        {
+          "indicador": "contagem",
+          "valor": 53,
+          "unidade": "% do fonte",
+          "condicao": {
+            "cena": "polígonos de teste com alpha de vértice",
+            "camera": "fixa",
+            "build": "othermode + blending",
+            "configuracao": "alpha 16/31"
+          },
+          "metodo": "leitura de pixel no painel",
+          "observacao": "alpha 8/31 mede 28 % do fonte."
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "blending por polígono",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "53 % e 28 % do fonte para 16/31 e 8/31"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Recorte de paleta CI e disciplina de VRAM."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 2 — Othermode, blending por polígono e a ordem real do `POLY_FORMAT` (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-010"
+      ]
+    },
+    {
+      "id": "OTD-012",
+      "tipo": "entrega",
+      "titulo": "Recorte por alpha de paleta CI e disciplina de VRAM",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "2",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "O GE do DS não carrega alpha na paleta. O port contornou isso no bake e aprendeu que VRAM não pode ser reescrita no mesmo frame em que a geometria ainda a usa.",
+      "estudo_engenharia": {
+        "problema": "A entrada de paleta CI do N64 carrega um bit de alpha usado em tecido transparente; a paleta do GE é de 15 bits, sem alpha, e reescrever VRAM com geometria enfileirada corrompia o que já estava na fila.",
+        "investigacao": "Bake do bit de alpha para RGBA5551 (CI4) e para GL_TEXTURE_COLOR0_TRANSPARENT (CI8); separação de lotes para não reescrever VRAM dentro do frame.",
+        "decisao": "Bake A1B5G5R5 para CI4 e flag de transparência de cor 0 para CI8, com tese de que o caminho de reciclagem dentro do frame não pode ser usado.",
+        "resultado": "O recorte de paleta funciona nos dois formatos e o caminho de reciclagem no mesmo frame foi identificado como corrompedor.",
+        "limitacao": "O caminho de recusa ainda não tinha sido substituído por capacidade; isso veio na entrega seguinte."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "O caminho de recusa ainda não tinha sido substituído por capacidade; isso veio na entrega seguinte."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-012",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [],
+      "testes": [
+        {
+          "tipo": "alpha de paleta",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "CI4 por bake A1B5G5R5 e CI8 por GL_TEXTURE_COLOR0_TRANSPARENT"
+        }
+      ],
+      "problemas": [
+        {
+          "id": "OTD-012-P1",
+          "descricao": "Reciclar VRAM dentro do frame corrompia geometria já enfileirada.",
+          "estado": "corrigido"
+        }
+      ],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Aumentar o cache para 64 slots e limitar a espera por relógio."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 2 — Recorte paletado e a VRAM que não pode ser reescrita no mesmo frame (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-007",
+        "OTD-010"
+      ]
+    },
+    {
+      "id": "OTD-013",
+      "tipo": "entrega",
+      "titulo": "Cache de 64 slots: o despejo a meio do frame não existe",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "2",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "O limite de 16 texturas era palpite, não hardware. O cache passou a 64 slots, e a sonda mostrou que o geometry engine não avisa a CPU que terminou um triângulo no meio do frame.",
+      "estudo_engenharia": {
+        "problema": "Uma sala do OoT (ambiente + atores) passa de 16 texturas, e a recusa virava triângulo sem textura; era preciso saber quanto o GE demora para dizer que terminou.",
+        "investigacao": "Sonda geDrainProbe com cache forçado a 8 slots, leitura de GFX_STATUS e GFX_POLYGON_RAM_USAGE, e uma lista aninhada com 26 texturas distintas.",
+        "decisao": "Capacidade de 64 slots (a VRAM cabe isso com folga) e espera de emergência limitada por relógio (2 ms), com no máximo uma espera perdida por lista.",
+        "resultado": "Produção em regime: Tex b0 h34 x0 e0 p0, sem binds nem despejos; 26 imagens distintas com D64 b26 e0 e FPS 60. Com 8 slots: D8 p26 b8 d0/1 c4096 2ms, 26 recusas. No instante da desistência, GXSTAT = 0x06000100 com 20 polígonos na Polygon RAM.",
+        "limitacao": "O melonDS só zera a Polygon RAM na fronteira do frame, então o despejo a meio do frame não é verificável no emulador; a hipótese de que o hardware real libera slots no meio da lista fica para o DSi físico. E 26 texturas não são uma sala real."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "O melonDS só zera a Polygon RAM na fronteira do frame, então o despejo a meio do frame não é verificável no emulador; a hipótese de que o hardware real libera slots no meio da lista fica para o DSi físico. E 26 texturas não são uma sala real."
+      ],
+      "evidencias": [],
+      "medicoes": [
+        {
+          "indicador": "contagem",
+          "valor": 34,
+          "unidade": "acertos de cache por frame",
+          "condicao": {
+            "cena": "lista de demonstração com 26 imagens",
+            "camera": "fixa",
+            "build": "cache de 64 slots",
+            "configuracao": "produção em regime"
+          },
+          "metodo": "linha Tex do HUD",
+          "observacao": "Tex b0 h34 x0 e0 p0: zero binds, zero recusas, zero despejos."
+        },
+        {
+          "indicador": "fps",
+          "valor": 60,
+          "unidade": "fps",
+          "condicao": {
+            "cena": "lista com 26 texturas",
+            "camera": "fixa",
+            "build": "cache de 64 slots",
+            "configuracao": "f16.7 s3.5 w19 ms"
+          },
+          "metodo": "overlay de performance",
+          "observacao": ""
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "capacidade do cache",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "26 imagens distintas, zero recusas em produção"
+        },
+        {
+          "tipo": "transbordo forçado",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "26 recusas contadas, VRAM não reescrita por baixo da geometria"
+        }
+      ],
+      "problemas": [
+        {
+          "id": "OTD-013-P1",
+          "descricao": "Teto inicial por contagem de polls (400.000) queimou 236 ms de um frame de 16 ms; trocado por teto de relógio de 2 ms.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-013-P2",
+          "descricao": "16 slots eram um palpite tratado como limite de hardware; a VRAM comporta 64.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-013-P3",
+          "descricao": "Despejo a meio do frame só pode ser confirmado em DSi real.",
+          "estado": "pendente"
+        }
+      ],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Contabilidade de bytes de VRAM antes de assets reais."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 2 — O cache de 64 slots e o despejo a meio do frame que não existe (2026-10-27)"
+        }
+      ],
+      "subestado": "o despejo a meio do frame continua não verificável no emulador",
+      "dependencias": [
+        "OTD-008",
+        "OTD-012"
+      ]
+    },
+    {
+      "id": "OTD-014",
+      "tipo": "entrega",
+      "titulo": "Camada Ultra64: o primeiro arquivo do decomp compila para ARM9",
+      "data": "2026-10-27",
+      "frente": "jogo",
+      "fase": "3",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "O projeto deixou de apenas imitar a libultra e passou a compilar código real da decompilação para o ARM9, escrevendo por cima as chamadas os* de que ele precisa.",
+      "estudo_engenharia": {
+        "problema": "O port era código próprio imitando a libultra; o objetivo era entrar no código do jogo sem ter a cópia de referência em mãos.",
+        "investigacao": "Escolha de um fecho pequeno de translation units do zeldaret/oot que compilasse sem asset e levantamento das chamadas os* necessárias.",
+        "decisao": "Implementar a camada de compatibilidade mínima e integrar esse fecho ao build.",
+        "resultado": "O primeiro arquivo real do jogo compilou para ARM9 e rodou no emulador.",
+        "limitacao": "O fecho é pequeno: ainda não há display list montada pelo código do jogo nem pilha de matrizes do jogo."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "O fecho é pequeno: ainda não há display list montada pelo código do jogo nem pilha de matrizes do jogo."
+      ],
+      "evidencias": [],
+      "medicoes": [],
+      "testes": [
+        {
+          "tipo": "compilação e execução de código do decomp",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "primeiro arquivo real do OoT executando no ARM9"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Ligar Gfx_Alloc ao bump pointer do decodificador e provar que a lista do jogo pinta pixels."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_JOGO.md",
+          "secao": "Fase 3 — camada de compatibilidade Ultra64: as primeiras instruções do jogo no binário (2026-10-27)",
+          "rotulo_publico": "Fase 3 — camada de compatibilidade Ultra64 (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-002"
+      ]
+    },
+    {
+      "id": "OTD-015",
+      "tipo": "entrega",
+      "titulo": "Display list montada pelo código do jogo pinta pixels",
+      "data": "2026-10-27",
+      "frente": "jogo",
+      "fase": "3",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "Uma lista escrita com as macros e os tipos do próprio jogo não só decodifica: ela pinta pixels na tela do DS.",
+      "estudo_engenharia": {
+        "problema": "Era preciso provar que Gfx_Alloc do decomp alimentando o bump pointer do decodificador produzia uma lista desenhável, com Vtx, Mtx, Vp e endereços relativos a segmento.",
+        "investigacao": "Ligação de Gfx_Alloc ao buffer do decodificador, com asserções de layout no emulador.",
+        "decisao": "Manter o layout exato do decomp, incluindo os 8 bytes do ramo para o próximo bloco.",
+        "resultado": "A lista do jogo desenhou o painel. A asserção 78 mediu que cada bloco de Gfx_Alloc é seguido por sizeof(Gfx) bytes de ramo, então a segunda Mtx fica sizeof(Mtx) + sizeof(Gfx) depois da primeira.",
+        "limitacao": "A modelview ainda vinha de teste; a pilha de matrizes do jogo entra na entrega seguinte."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "A modelview ainda vinha de teste; a pilha de matrizes do jogo entra na entrega seguinte."
+      ],
+      "evidencias": [],
+      "medicoes": [],
+      "testes": [
+        {
+          "tipo": "lista montada pelo jogo",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "pixels desenhados; asserção 78 confirma o espaçamento de Gfx_Alloc"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Usar Matrix_* do sys_matrix.c como fonte da modelview."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_JOGO.md",
+          "secao": "Fase 3 — A display list montada pelo código do jogo chega ao painel (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-014"
+      ]
+    },
+    {
+      "id": "OTD-016",
+      "tipo": "entrega",
+      "titulo": "sys_matrix.c gera a modelview do jogo",
+      "data": "2026-10-27",
+      "frente": "jogo",
+      "fase": "3",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "A modelview deixou de vir de um teste: quem a calcula é a pilha de matrizes do próprio jogo, com a arena THA que o sys_matrix.c espera. No caminho, a tabela de senos do N64 mostrou uma assimetria em 45°.",
+      "estudo_engenharia": {
+        "problema": "Matrix_Init, Matrix_Put, Matrix_Push, Matrix_TranslateRotateZYX, Matrix_ToMtx e Matrix_Pop precisavam rodar sobre uma arena de GameState, e a conversão de matriz precisava respeitar o resultado real.",
+        "investigacao": "Quatro builds para descobrir a lei de composição da pilha: Matrix_Translate(T1, MTXMODE_NEW) → Matrix_RotateZYX(R, APPLY) → Matrix_Translate(T2, APPLY).",
+        "decisao": "Adotar a composição medida e documentar a assimetria da tabela de senos em vez de presumir simetria a 45°.",
+        "resultado": "A modelview do jogo passou a posicionar a cena. Em binângulo 0x2000, sins(0x2000) lê sintable[0x200] = 23187, em vez do valor simétrico esperado.",
+        "limitacao": "A cena ainda é de teste; a sala real entra na fase 6."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "A cena ainda é de teste; a sala real entra na fase 6."
+      ],
+      "evidencias": [],
+      "medicoes": [
+        {
+          "indicador": "contagem",
+          "valor": 23187,
+          "unidade": "valor da tabela de senos em 0x2000",
+          "condicao": {
+            "cena": "teste de matrizes",
+            "camera": "fixa",
+            "build": "sys_matrix do jogo",
+            "configuracao": "binângulo 0x2000"
+          },
+          "metodo": "leitura da sintable do jogo em execução",
+          "observacao": "A tabela não é simétrica a 45°, porque sins() faz angle >>= 4 e inverte o índice quando o bit 0x400 está ligado."
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "pilha de matrizes do jogo",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "modelview composta por Matrix_* posiciona a cena"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Carregar uma sala real do jogo."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_JOGO.md",
+          "secao": "Fase 3 — A pilha de matrizes do `sys_matrix.c` gera a modelview, e a tabela de senos do jogo não é simétrica a 45° (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-015"
+      ]
+    },
+    {
+      "id": "OTD-017",
+      "tipo": "entrega",
+      "titulo": "Viewport de dois cantos e FORCE_BL",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "3",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "O viewport do N64 é um par de cantos inclusivos contado de baixo, não deslocamento mais tamanho. Com a regra errada, metade das listas saía de cabeça para baixo ou sumia.",
+      "estudo_engenharia": {
+        "problema": "O backend interpretava o viewport como deslocamento + tamanho com y do topo, o que desenhava de cabeça para baixo e sumia com metade das listas.",
+        "investigacao": "Três cópias da mesma lista no mesmo frame, cada uma com seu viewport e sua cor.",
+        "decisao": "GFX_VIEWPORT = (x1,y1)–(x2,y2), inclusivo, com y contado da base; FORCE_BL só marca translucidez quando a cor de blend do ciclo 1 não é CLR_MEM.",
+        "resultado": "Faixas submetidas como (11,50) e (71,110) pintaram 39 linhas cada, exatamente o esperado para cantos inclusivos.",
+        "limitacao": "O recorte contra x = ±w e y = ±w continua com o clipper do GE."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "O recorte contra x = ±w e y = ±w continua com o clipper do GE."
+      ],
+      "evidencias": [],
+      "medicoes": [
+        {
+          "indicador": "contagem",
+          "valor": 39,
+          "unidade": "linhas por faixa",
+          "condicao": {
+            "cena": "três cópias de uma lista",
+            "camera": "fixa",
+            "build": "viewport de dois cantos",
+            "configuracao": "faixas (11,50) e (71,110)"
+          },
+          "metodo": "contagem de linhas pintadas no painel",
+          "observacao": ""
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "viewport e FORCE_BL",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "39 linhas por faixa; translucidez só quando o othermode pede"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Corrigir ordem de profundidade e coluna de translação."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 3 — O viewport é dois cantos contados de baixo, e `FORCE_BL` não basta para ser translúcido (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-009"
+      ]
+    },
+    {
+      "id": "OTD-018",
+      "tipo": "entrega",
+      "titulo": "Profundidade pelo menor z/w e coluna de translação",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "3",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "Descobriu-se medindo que o geometry engine decide profundidade pelo menor clip z/w, não pelo maior, e que a coluna de translação da matriz divide por 2^shift. As duas regras foram implementadas.",
+      "estudo_engenharia": {
+        "problema": "A regra de profundidade e a conversão dos slots de translação estavam erradas, o que fazia a lista do jogo aparecer fora do lugar ou com oclusão invertida.",
+        "investigacao": "Comparação de translação de matriz com translação de vértice e leitura de pixel na emenda das duas listas.",
+        "decisao": "Adotar o menor clip z/w e a divisão da coluna de translação por 2^shift.",
+        "resultado": "Com a lista do jogo sozinha, a costura vermelha/verde ficou na coluna 127,5, o centro exato do painel.",
+        "limitacao": "Overlay ortho nativo precisa de z negativo para ficar atrás do jogo; o recorte no plano perto ainda não existia."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "Overlay ortho nativo precisa de z negativo para ficar atrás do jogo; o recorte no plano perto ainda não existia."
+      ],
+      "evidencias": [],
+      "medicoes": [
+        {
+          "indicador": "contagem",
+          "valor": 127.5,
+          "unidade": "coluna do painel",
+          "condicao": {
+            "cena": "lista do jogo com costura vermelha/verde",
+            "camera": "presas rotação e emenda em zero",
+            "build": "profundidade e translação corrigidas",
+            "configuracao": "painel de 256 colunas"
+          },
+          "metodo": "leitura da coluna em que a costura aparece",
+          "observacao": ""
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "profundidade e translação",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "costura no centro do painel"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Recorte de polígono no plano perto."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 3 — Quem manda na profundidade é o **menor** `z/w`, e a coluna de translação divide por 2^shift (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-017"
+      ]
+    },
+    {
+      "id": "OTD-019",
+      "tipo": "entrega",
+      "titulo": "Recorte de polígono no plano perto",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "2",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "O estágio equivalente ao RSP passou a cortar polígonos no plano perto em espaço de olho. Sem ele, um vértice muito atrás da câmera era preso pelo v16 e o motor cortava no plano errado.",
+      "estudo_engenharia": {
+        "problema": "Um vértice 20.000 unidades atrás da câmera estourava o clamp de v16 e o motor cortava no plano errado; a crença inicial era de que o clipper do GE descartaria o triângulo inteiro.",
+        "investigacao": "Sonda com vtx[3].z = -2000 e a lista do jogo parada, medindo a borda esquerda do losango no painel.",
+        "decisao": "Aplicar a modelview em software e cortar por Sutherland–Hodgman em z = nearZ antes de enviar ao GE.",
+        "resultado": "O plano longe não descarta: corta. A borda que no limpo é 182,164,146,130,112,110,126,144,160,176,192,210,226 foi medida com 14 colunas de diferença antes da correção.",
+        "limitacao": "O recorte contra x = ±w e y = ±w não é feito pelo port; fica com o clipper do GE."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "O recorte contra x = ±w e y = ±w não é feito pelo port; fica com o clipper do GE."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-019",
+          "publicada_no_site": true,
+          "arquivos_publicados": [
+            "assets/oot-dsi/otd-019-cl1-top.png"
+          ],
+          "observacao": "Pasta de evidência do projeto; apenas as capturas listadas em evidencias_publicadas foram copiadas para o site."
+        }
+      ],
+      "medicoes": [
+        {
+          "indicador": "contagem",
+          "valor": 14,
+          "unidade": "colunas de painel",
+          "condicao": {
+            "cena": "losango vermelho com vtx[3].z = -2000",
+            "camera": "parada",
+            "build": "sem recorte no plano perto",
+            "configuracao": "painel de 256 colunas"
+          },
+          "metodo": "leitura da borda esquerda no painel",
+          "observacao": ""
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "recorte no plano perto",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "corte Sutherland–Hodgman em z = nearZ reproduz o N64"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Aplicar a pipeline numa sala real."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 2 — O recorte de polígono entrou, e a lei do geometry engine que o justificava estava errada (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-006"
+      ]
+    },
+    {
+      "id": "OTD-020",
+      "tipo": "entrega",
+      "titulo": "Entrada: teclas do DS e toque viram o contrato BTN_*",
+      "data": "2026-10-27",
+      "frente": "jogo",
+      "fase": "1",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "O DS não tem analógico, e o contrato de entrada do OoT espera um. Uma camada própria entrega ao jogo o bitmask BTN_* e as structs Input/OSContPad a partir das oito teclas, do D-pad e da tela de toque.",
+      "estudo_engenharia": {
+        "problema": "O padmgr/libultra não existe no DS, e o jogo lê um analógico que o hardware não tem.",
+        "investigacao": "Mapeamento das oito teclas e do D-pad para BTN_*, com o toque funcionando como analógico virtual.",
+        "decisao": "Camada própria que emite exatamente o formato consumido por game/oot, sem tocar no código do jogo.",
+        "resultado": "Entrada do DS chegando ao jogo no formato esperado, incluindo o par Input/OSContPad.",
+        "limitacao": "O analógico virtual não tem a mesma curva do controle do N64; a sensibilidade precisa ser ajustada com gameplay real."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "O analógico virtual não tem a mesma curva do controle do N64; a sensibilidade precisa ser ajustada com gameplay real."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-020",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [],
+      "testes": [
+        {
+          "tipo": "entrada",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "teclas, D-pad e toque entregues como BTN_*"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Leitura de assets do cartão."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_JOGO.md",
+          "secao": "Fase 1 — Entrada: o DS não tem analógico, e o contrato do OoT espera um (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-002"
+      ]
+    },
+    {
+      "id": "OTD-021",
+      "tipo": "entrega",
+      "titulo": "fs: assets lidos do cartão SD em streaming",
+      "data": "2026-10-27",
+      "frente": "jogo",
+      "fase": "1",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "O carregador ganhou um jeito de ler arquivos do cartão SD sem manter o blob inteiro na RAM, e a vazão do caminho completo foi medida.",
+      "estudo_engenharia": {
+        "problema": "O decodificador Yaz0 já funcionava em streaming, mas não havia adaptador libfat que alimentasse esse streaming a partir do cartão.",
+        "investigacao": "Adaptador de arquivo sobre libfat ligado ao yaz0DecompressStreamed, medindo o caminho inteiro e não só o decoder.",
+        "decisao": "Leitura em blocos com o SD emulado pelo DLDI FolderSync no emulador.",
+        "resultado": "FS 17/17: o cartão montou e os arquivos de teste foram lidos pelo caminho completo.",
+        "limitacao": "No emulador não existe latência de SD; a vazão de leitura real só pode ser medida em hardware."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "No emulador não existe latência de SD; a vazão de leitura real só pode ser medida em hardware."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-021",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [],
+      "testes": [
+        {
+          "tipo": "leitura de assets",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz, DLDI FolderSync",
+          "resultado": "FS 17/17 arquivos lidos em streaming"
+        }
+      ],
+      "problemas": [
+        {
+          "id": "OTD-021-P1",
+          "descricao": "Vazão real de SD não é mensurável no emulador.",
+          "estado": "pendente"
+        }
+      ],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Carregar segmentos de uma sala real."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_JOGO.md",
+          "secao": "Fase 1 — `nds/fs`: os primeiros bytes de asset entrando pelo cartão (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-002"
+      ]
+    },
+    {
+      "id": "OTD-022",
+      "tipo": "entrega",
+      "titulo": "A primeira sala real do jogo na tela de cima",
+      "data": "2026-10-27",
+      "frente": "motor+jogo",
+      "fase": "6",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "Uma sala real de Ocarina of Time, market_day_room_0, apareceu no painel do DS. O bloqueio que parecia ser de versão da cópia de referência era ordem de bytes: o decodificador aprendeu a ler big-endian.",
+      "estudo_engenharia": {
+        "problema": "Só listas montadas na RAM do DS, em little-endian, tinham entrado no motor. Uma display list de cartucho chega com campos de 16 bits invertidos, e a extração dos assets parecia exigir uma versão específica da cópia de referência.",
+        "investigacao": "Leitura do arquivo cru da sala e confirmação ao vivo do near da projeção publicada pelo prologue.",
+        "decisao": "Caminho big-endian no decodificador (f3SetSegmentBe) e leitura direta de market_day_room_0.",
+        "resultado": "Sala desenhada com 510 triângulos: DL t510 c0 k0 x0 ok. A sala entrou com near 667,5 e shift 9, e o motor publicou nearZ = -5339, coerente com a fórmula derivada.",
+        "limitacao": "A sala é flat-shaded nesta entrega; textura e minificação vêm na seguinte, junto com a descoberta de que o problema visual não era paleta."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "A sala é flat-shaded nesta entrega; textura e minificação vêm na seguinte, junto com a descoberta de que o problema visual não era paleta."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-022",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [
+        {
+          "indicador": "contagem",
+          "valor": 510,
+          "unidade": "triângulos",
+          "condicao": {
+            "cena": "market_day_room_0",
+            "camera": "fixa",
+            "build": "decodificador big-endian",
+            "configuracao": "modo DS"
+          },
+          "metodo": "linha DL do HUD",
+          "observacao": "DL t510 c0 k0 x0 ok; near 667,5, shift 9, nearZ publicado -5339."
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "sala real",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "market_day_room_0 visível, 510 triângulos, zero erros de decodificação"
+        }
+      ],
+      "problemas": [],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Texturas da sala e diagnóstico do pontilhado colorido."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 6 — O decodificador aprendeu a ler big-endian, e o plano perto foi confirmado numa sala real (2026-10-27)"
+        },
+        {
+          "arquivo": "HISTORICO_JOGO.md",
+          "secao": "Fase 6 — A primeira sala real do jogo apareceu na tela de cima, e o bloqueio do cópia de referência era um byte-swap (2026-10-27)",
+          "rotulo_publico": "Fase 6 — a primeira sala real do jogo na tela de cima (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-006",
+        "OTD-016",
+        "OTD-019",
+        "OTD-021"
+      ]
+    },
+    {
+      "id": "OTD-023",
+      "tipo": "entrega",
+      "titulo": "Sala texturizada: o confete era minificação, não paleta",
+      "data": "2026-10-27",
+      "frente": "motor+jogo",
+      "fase": "6",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "A primeira sala com textura chegou coberta de confete colorido. A hipótese herdada era paleta errada; a medição provou que a paleta estava certa e que o problema era minificação: o DS amostra um texel por pixel, sem filtro.",
+      "estudo_engenharia": {
+        "problema": "Bmori1_room_0 saía com pontilhado cor-de-rainbow e a hipótese em vigor era de paleta CI errada.",
+        "investigacao": "Medição dos dois lados: texéis enviados e painel renderizado; contagem de texéis azul-dominantes; troca de cada textura por cor chata como controle.",
+        "decisao": "Descartar a hipótese de paleta e atacar a amostragem: nasce o instrumento de grão do painel e a meta explícita de minificação.",
+        "resultado": "Os texéis enviados medem r13 g12 b12 e grão 2,4, contra 17,25 no painel; zero de 45.952 texéis é azul-dominante. Trocar cada textura por uma cor chata derruba o painel a 0,68. A sala roda com 646 triângulos, 75 G_SETTIMG, 8 G_LOADTLUT em 2 paletas: Tex b0 h65 x0 e0 t646/532 on.",
+        "limitacao": "O GE não tem filtro de minificação; mitigar exige cadeia de mip própria, que ainda não existe nesta entrega."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "O GE não tem filtro de minificação; mitigar exige cadeia de mip própria, que ainda não existe nesta entrega."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-023",
+          "publicada_no_site": true,
+          "arquivos_publicados": [
+            "assets/oot-dsi/otd-023-bm33-top.png"
+          ],
+          "observacao": "Pasta de evidência do projeto; apenas as capturas listadas em evidencias_publicadas foram copiadas para o site."
+        }
+      ],
+      "medicoes": [
+        {
+          "indicador": "grao",
+          "valor": 17.25,
+          "unidade": "grão do painel",
+          "condicao": {
+            "cena": "Bmori1_room_0",
+            "camera": "fixa (antes da régua de ângulo)",
+            "build": "sala texturizada",
+            "configuracao": "sem cadeia de mip"
+          },
+          "metodo": "speck2.py sobre recorte do painel",
+          "observacao": "Os texéis enviados medem 2,4; trocar texturas por cor chata leva o painel a 0,68."
+        },
+        {
+          "indicador": "contagem",
+          "valor": 646,
+          "unidade": "triângulos",
+          "condicao": {
+            "cena": "Bmori1_room_0",
+            "camera": "fixa",
+            "build": "sala texturizada",
+            "configuracao": "modo DS"
+          },
+          "metodo": "linha DL do HUD",
+          "observacao": "75 G_SETTIMG, 8 G_LOADTLUT em 2 paletas; Tex b0 h65 x0 e0 t646/532 on."
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "sala texturizada",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "parede, madeira e painel reconhecíveis; hipótese de paleta refutada"
+        }
+      ],
+      "problemas": [
+        {
+          "id": "OTD-023-P1",
+          "descricao": "Hipótese de paleta CI errada refutada por medição; a causa era minificação sem filtro no GE.",
+          "estado": "corrigido"
+        }
+      ],
+      "retratacoes": [
+        {
+          "afirmacao_anterior": "O pontilhado colorido da sala texturizada vinha de paleta CI errada.",
+          "onde_foi_publicada": "Hipótese herdada, registrada e refutada na própria entrega.",
+          "evidencia_nova": "Os texéis enviados têm grão 2,4 e nenhum dos 45.952 texéis é azul-dominante; trocar cada textura por cor chata leva o painel a 0,68.",
+          "conclusao_vigente": "A paleta está correta; o defeito é minificação, porque o geometry engine amostra um texel por pixel sem filtro.",
+          "registrada_em": "OTD-023"
+        }
+      ],
+      "proximos_passos": [
+        "Construir cadeia de mip no bake e escolher nível por triângulo."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 6 — O pontilhado da sala texturizada não era cor, era minificação (2026-10-27)"
+        },
+        {
+          "arquivo": "HISTORICO_JOGO.md",
+          "secao": "Fase 6 — A sala texturizada entrou, e a consola ganhou o instrumento que matou a hipótese da paleta (2026-10-27)"
+        }
+      ],
+      "dependencias": [
+        "OTD-022"
+      ]
+    },
+    {
+      "id": "OTD-024",
+      "tipo": "entrega",
+      "titulo": "Câmera presa como régua e seleção de mip por triângulo",
+      "data": "2026-10-27",
+      "frente": "motor+jogo",
+      "fase": "7",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "Antes de medir a correção, o projeto teve de consertar a régua: a câmera girava sozinha, então cada captura era uma vista diferente. Com o ângulo preso, uma cadeia de mip escolhida por triângulo cortou o grão do painel em 32 %, mas o primeiro número publicado dizia o contrário por causa de um erro de escala de 4096 vezes.",
+      "estudo_engenharia": {
+        "problema": "A fase 6 terminou com um número de grão que ninguém podia repetir, e o motor ia medir melhora ou piora com o mesmo instrumento quebrado.",
+        "investigacao": "ROOM_SPIN/ROOM_ANGLE para prender a câmera; sonda de nível por triângulo comparando área de textura e área projetada; varredura de ângulo com a sonda ligada.",
+        "decisao": "Construir a cadeia box-filter no bake com teto de 2 níveis e escolher o nível por triângulo; aceitar o custo de render em troca da redução de grão.",
+        "resultado": "No ângulo preso: 13,28 de grão sem cadeia, 9,09 com teto 2 (−32 %), 9,06 com teto 3 (0,03 a mais por 4 FPS). A cadeia custa +19,6 ms na primeira medição publicada (30,0 para 49,6 ms de render, FPS 20 para 19). O histograma correto é Lo 2/25/256/363, com a pior face em R ≈ 79 texéis por pixel.",
+        "limitacao": "O custo é alto e ainda não estava atribuído; a atribuição errada publicada aqui foi corrigida em OTD-026. Faces mais fundas que 1024 unidades de mundo caem silenciosamente para o nível 0."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "O custo é alto e ainda não estava atribuído; a atribuição errada publicada aqui foi corrigida em OTD-026. Faces mais fundas que 1024 unidades de mundo caem silenciosamente para o nível 0."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-024",
+          "publicada_no_site": true,
+          "arquivos_publicados": [
+            "assets/oot-dsi/otd-024-mf0-top.png"
+          ],
+          "observacao": "Pasta de evidência do projeto; apenas as capturas listadas em evidencias_publicadas foram copiadas para o site."
+        },
+        {
+          "referencia": "evidencias/OTD-025",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [
+        {
+          "indicador": "grao",
+          "valor": 9.09,
+          "unidade": "grão do painel",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0",
+            "build": "GE_TEX_MIP_MAX 2",
+            "configuracao": "GE_TEX_LOD_BIAS 2048"
+          },
+          "metodo": "speck2.py sobre recorte do painel, md5 repetível em dois builds",
+          "observacao": "Sem cadeia: 13,28; teto 3: 9,06 (0,03 a mais por 4 FPS)."
+        },
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 49.6,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0",
+            "build": "GE_TEX_MIP_MAX 2",
+            "configuracao": "modo DS, 67 MHz"
+          },
+          "metodo": "linha 8 do HUD (s)",
+          "observacao": "Sem cadeia: 30,0 ms. Valor antes da tabela de recíprocos; a entrega OTD-026 baixa para 47,5 ms."
+        },
+        {
+          "indicador": "contagem",
+          "valor": 644,
+          "unidade": "faces acima do nível 0 (de 646)",
+          "condicao": {
+            "cena": "Bmori1_room_0",
+            "camera": "ROOM_ANGLE 0",
+            "build": "sonda de mip ligada",
+            "configuracao": "GE_TEX_MIP_MAX 2"
+          },
+          "metodo": "linha Lo do HUD",
+          "observacao": "Lo 2/25/256/363; pior face r100824, R ≈ 79."
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "cadeia de mip",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "grão 13,28 para 9,09 entre builds, com md5 repetível por linha"
+        },
+        {
+          "tipo": "teto de profundidade",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "nível 3 compra 0,03 de grão e custa 4 FPS"
+        }
+      ],
+      "problemas": [
+        {
+          "id": "OTD-024-P1",
+          "descricao": "Câmera girava sozinha; capturas comparadas eram vistas diferentes. Resolvido com ROOM_SPIN/ROOM_ANGLE.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-024-P2",
+          "descricao": "Custo de +17,5 ms com a cadeia ligada; formulação atual exige ~16 multiplicações de 64 bits por face.",
+          "estado": "pendente"
+        },
+        {
+          "id": "OTD-024-P3",
+          "descricao": "Faces com w > 65536 têm recíproco zero e caem silenciosamente para o nível 0.",
+          "estado": "pendente"
+        }
+      ],
+      "retratacoes": [
+        {
+          "afirmacao_anterior": "A sala inteira está ampliada neste ângulo: Lo 646/0/0/0, nenhuma face minifica.",
+          "onde_foi_publicada": "Fase 7 do histórico do jogo, antes da correção OTD-025.",
+          "evidencia_nova": "O deslocamento da projeção estava em 16 onde a derivação pede 28; 467 de 646 faces caíam pela guarda pxA == 0 e o resultado era saturação, não medição.",
+          "conclusao_vigente": "A sala minifica muito: Lo 2/25/256/363, pior face em R ≈ 79 texéis por pixel. A fase 6 estava certa.",
+          "registrada_em": "OTD-025"
+        }
+      ],
+      "proximos_passos": [
+        "Corrigir a escala da sonda (OTD-025) e depois atribuir o custo real da cadeia."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 7 — a cadeia de mip existe, e ela primeiro produziu um número saturado que derrubou a fase 6 por engano (2026-10-27)"
+        },
+        {
+          "arquivo": "HISTORICO_JOGO.md",
+          "secao": "Fase 7 — a régua de medida foi consertada, e ela refutou a fase 6 por engano antes de se refutar a si mesma (2026-10-27)"
+        }
+      ],
+      "subestado": "custo de +17,5 ms com a cadeia ligada; nenhuma face mais funda que 1024 unidades de mundo testada",
+      "dependencias": [
+        "OTD-023"
+      ]
+    },
+    {
+      "id": "OTD-025",
+      "tipo": "correcao",
+      "titulo": "Correção de escala da sonda de mip (fator 4096)",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "7b",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "Uma correção dentro da entrega do mip: a posição projetada estava 4096 vezes maior do que deveria, o que fazia 467 de 646 faces caírem por uma guarda e produzia o falso veredito de que nada minificava. Corrigido, o histograma de níveis apareceu inteiro.",
+      "estudo_engenharia": {
+        "problema": "O resultado da sonda dizia Lo 646/0/0/0, isto é, nenhuma face minificando, e esse número foi usado para refutar a fase 6.",
+        "investigacao": "Varredura de ROOM_ANGLE com a sonda ligada, que encontrou no primeiro ângulo a própria medição quebrada: cantos achatados no clamp e 467 faces caindo pela guarda pxA == 0.",
+        "decisao": "Corrigir o deslocamento da projeção de 16 para 28 e remedir no mesmo ângulo preso.",
+        "resultado": "Com ROOM_ANGLE 0: Lo 2/25/256/363 e gp0, sem guarda e sem área perdida; pior face r100824, R ≈ 79. O veredito da fase 6 foi restaurado.",
+        "limitacao": "Esta é uma correção dentro de OTD-024 e não conta como avanço independente; compartilha as capturas e não substitui a necessidade de varredura de ângulo."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "Esta é uma correção dentro de OTD-024 e não conta como avanço independente; compartilha as capturas e não substitui a necessidade de varredura de ângulo."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-024",
+          "publicada_no_site": true,
+          "arquivos_publicados": [
+            "assets/oot-dsi/otd-024-mf0-top.png"
+          ],
+          "observacao": "Pasta de evidência do projeto; apenas as capturas listadas em evidencias_publicadas foram copiadas para o site."
+        },
+        {
+          "referencia": "evidencias/OTD-025",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [
+        {
+          "indicador": "contagem",
+          "valor": 467,
+          "unidade": "faces de 646 perdidas pela guarda pxA == 0",
+          "condicao": {
+            "cena": "Bmori1_room_0",
+            "camera": "ROOM_ANGLE 0",
+            "build": "sonda com deslocamento 16 (errado)",
+            "configuracao": "GE_TEX_MIP_MAX 2"
+          },
+          "metodo": "linha Lo do HUD",
+          "observacao": "Depois da correção: gp0 e histograma Lo 2/25/256/363."
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "correção de escala",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "histograma Lo 2/25/256/363 restaurado"
+        }
+      ],
+      "problemas": [
+        {
+          "id": "OTD-025-P1",
+          "descricao": "Deslocamento da projeção em 16 onde a derivação pede 28; corrigido.",
+          "estado": "corrigido"
+        }
+      ],
+      "retratacoes": [
+        {
+          "afirmacao_anterior": "Nenhuma face da sala minifica neste ângulo (Lo 646/0/0/0).",
+          "onde_foi_publicada": "Fase 7 do histórico do jogo, antes desta correção.",
+          "evidencia_nova": "A posição projetada estava 4096× grande demais; 467 faces caíam pela guarda pxA == 0. Com o deslocamento 28, o histograma é Lo 2/25/256/363.",
+          "conclusao_vigente": "A sala minifica muito e a cadeia de mip é necessária; a fase 6 estava certa.",
+          "registrada_em": "OTD-025"
+        }
+      ],
+      "proximos_passos": [
+        "Atribuir o custo real da cadeia de mip."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 7 — a cadeia de mip existe, e ela primeiro produziu um número saturado que derrubou a fase 6 por engano (2026-10-27)"
+        },
+        {
+          "arquivo": "HISTORICO_JOGO.md",
+          "secao": "Fase 7 — a régua de medida foi consertada, e ela refutou a fase 6 por engano antes de se refutar a si mesma (2026-10-27)"
+        }
+      ],
+      "entrega_pai": "OTD-024",
+      "dependencias": [
+        "OTD-024"
+      ]
+    },
+    {
+      "id": "OTD-026",
+      "tipo": "entrega",
+      "titulo": "O custo do mip era aritmética por face; recíproco por tabela devolve 2,1 ms",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "8",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "A fase anterior tinha atribuído o custo da cadeia de mip à troca de textura, mas nunca rodou um build que separasse as duas coisas. O build de controle mostrou que os binds custam zero e que o custo é aritmética por face; uma tabela de recíprocos devolveu 2,1 ms sem mudar um pixel do painel.",
+      "estudo_engenharia": {
+        "problema": "A cadeia de mip custava +19,6 ms, atribuídos à troca de textura (Tex h65 para h226) sem medição que separasse causas.",
+        "investigacao": "Interruptor GE_TEX_MIP_NULL: o nível é calculado e descartado, então o quadro paga o seletor e nunca troca de textura. Quatro builds adicionais por subtração.",
+        "decisao": "Substituir a divisão por tabela de recíprocos de 1 KB (normalização por clz, oito bits de mantissa, erro abaixo de 0,2 %) e manter a fórmula exata.",
+        "resultado": "O build com seletor calculado e descartado mede 49,9 ms, o mesmo que a cadeia inteira (49,6): binds custam dentro do ruído. Por subtração: sem seletor 30,0, com multiplicações de 32 bits 40,1, com uma multiplicação de 64 bits por canto 43,5, com a fórmula inteira 49,6. A tabela entrega s47,5 contra s49,6, painel md5-idêntico 05992cb58c8229ba3b60a28f949e2e93, mesmos contadores.",
+        "limitacao": "Ainda custa +17,5 ms; são cerca de 16 multiplicações de 64 bits por face. A próxima formulação precisa ser validada face a face antes de substituir. Faces mais fundas que 1024 unidades de mundo têm recíproco zero."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "Ainda custa +17,5 ms; são cerca de 16 multiplicações de 64 bits por face. A próxima formulação precisa ser validada face a face antes de substituir. Faces mais fundas que 1024 unidades de mundo têm recíproco zero."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-026",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 47.5,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0",
+            "build": "tabela de recíprocos (mj0/mj3)",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048"
+          },
+          "metodo": "linha 8 do HUD (s), comparação A/B com o build de divisão exata",
+          "observacao": "49,6 com divisão exata; 30,0 com a cadeia desligada."
+        },
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 49.9,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0",
+            "camera": "ROOM_ANGLE 0",
+            "build": "GE_TEX_MIP_NULL = 1",
+            "configuracao": "nível calculado e descartado"
+          },
+          "metodo": "linha 8 do HUD (s)",
+          "observacao": "Sem binds extras e com o mesmo custo da cadeia inteira: o custo é aritmética, não troca de textura."
+        },
+        {
+          "indicador": "grao",
+          "valor": 9.09,
+          "unidade": "grão do painel",
+          "condicao": {
+            "cena": "Bmori1_room_0",
+            "camera": "ROOM_ANGLE 0",
+            "build": "tabela de recíprocos",
+            "configuracao": "GE_TEX_MIP_MAX 2"
+          },
+          "metodo": "speck2.py; md5 do painel idêntico ao build de divisão exata",
+          "observacao": "Nenhuma perda visual mensurável."
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "subtração de builds",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "custos: 30,0 / 40,1 / 43,5 / 49,6 ms"
+        },
+        {
+          "tipo": "tabela de recíprocos",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "47,5 ms, painel md5-idêntico, mesmos contadores, build sem avisos"
+        }
+      ],
+      "problemas": [
+        {
+          "id": "OTD-026-P1",
+          "descricao": "Crença de que o custo era a troca de textura; refutada pelo build de controle. A fase 7 foi anotada com a retratação.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-026-P2",
+          "descricao": "Custo residual de +17,5 ms, dominado por ~16 multiplicações de 64 bits por face.",
+          "estado": "pendente"
+        },
+        {
+          "id": "OTD-026-P3",
+          "descricao": "Recíproco 16.16 é zero para w > 65536 (face mais funda que 1024 unidades de mundo); nessas faces o nível cai para 0.",
+          "estado": "pendente"
+        },
+        {
+          "id": "OTD-026-P4",
+          "descricao": "Varredura de ROOM_ANGLE com o instrumento de áudio continua não feita; custo medido em um ângulo só.",
+          "estado": "pendente"
+        }
+      ],
+      "retratacoes": [
+        {
+          "afirmacao_anterior": "O custo da cadeia de mip é a troca de textura: o cache passa a carregar mais de um nível por material e os binds sobem de h65 para h226.",
+          "onde_foi_publicada": "Fase 7 do histórico do motor e seção de status do painel.",
+          "evidencia_nova": "Com o seletor calculando e o resultado descartado (GE_TEX_MIP_NULL), o render mede 49,9 ms — o mesmo que a cadeia inteira. Zero binds extras.",
+          "conclusao_vigente": "O custo é aritmética por face; os binds custam dentro do ruído.",
+          "registrada_em": "OTD-026"
+        }
+      ],
+      "proximos_passos": [
+        "Trocar a formulação por área em espaço de olho com profundidade média por face, validada face a face.",
+        "Refazer a varredura de ROOM_ANGLE e reportar grão e custo por vista.",
+        "Comparar paleta contra referência do N64 no ângulo preso."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 8 — o custo da cadeia não eram os binds, era a aritmética por face (2026-10-27)"
+        }
+      ],
+      "subestado": "custo residual de +17,5 ms; teto de profundidade de 1024 unidades de mundo",
+      "dependencias": [
+        "OTD-024",
+        "OTD-025"
+      ]
+    },
+    {
+      "id": "OTD-027",
+      "tipo": "entrega",
+      "titulo": "A área em espaço de olho empatou; o ganho estava no tamanho do inteiro",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "9",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "A fase anterior apontou a formulação por área em espaço de olho como o próximo corte de custo. Construída e medida, ela não pagou: a versão exata custou 1,2 ms mais que o seletor antigo e a versão com profundidade média empatou, ambas com o mesmo painel. O ganho veio de outro lugar: limitando os cantos projetados a 750 px, as quatro multiplicações da área cabem em 32 bits e o render caiu de 47,7 para 46,5 ms sem mudar um pixel.",
+      "estudo_engenharia": {
+        "problema": "A cadeia de mip custava +17,5 ms sobre a cena sem seletor, e a fase 8 tinha indicado a formulação por área em espaço de olho como o próximo corte, sem tê-la medido.",
+        "investigacao": "Três seletores no mesmo lugar: shoelace de 64 bits (o que estava no build), identidade em espaço de olho exata (2A = Sx Sy |det[x y w]| / (w0 w1 w2), uma divisão de 64 bits por face) e a mesma identidade com o cubo da profundidade média no lugar do produto (nenhuma divisão). Uma sonda calculou os dois lados e contou, face a face, as discordâncias de nível.",
+        "decisao": "Manter o shoelace e limitar cada canto projetado a ±12000 dezesseis-avos de pixel (±750 px), o que deixa as quatro multiplicações da área em 32 bits. As duas variantes em espaço de olho ficaram como interruptor medido.",
+        "resultado": "Espaço de olho exato: s48,9 contra s47,7 do shoelace (1,2 ms mais caro), zero divergência de nível em 646 faces. Profundidade média: s47,8, mesmos níveis, mesmo painel. Área em 32 bits: s46,5 nas duas repetições e no build entregue, painel md5-idêntico, e nenhuma face atingiu o limite em três ângulos (0°, 22,5°, 45°).",
+        "limitacao": "O ganho é 1,2 ms, 7 % dos 17,5 ms da cadeia; o FPS não muda. O limite de 750 px é uma mudança de comportamento, verificada por contador em uma sala e três vistas apenas. A maior parte do custo restante está nas multiplicações de 64 bits da projeção por canto, não na área."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "O ganho é 1,2 ms, 7 % dos 17,5 ms da cadeia; o FPS não muda. O limite de 750 px é uma mudança de comportamento, verificada por contador em uma sala e três vistas apenas. A maior parte do custo restante está nas multiplicações de 64 bits da projeção por canto, não na área."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-027",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 47.7,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0",
+            "build": "shoelace de 64 bits (f9a/f9c)",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048"
+          },
+          "metodo": "linha 8 do HUD (s), duas repetições",
+          "observacao": "47,7 nas duas; md5 do painel 05992cb58c8229ba3b60a28f949e2e93."
+        },
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 48.9,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0",
+            "camera": "ROOM_ANGLE 0",
+            "build": "determinante em espaço de olho com divisão de 64 bits (f9b/f9b2)",
+            "configuracao": "GE_MIP_EYE 1"
+          },
+          "metodo": "linha 8 do HUD (s), duas repetições",
+          "observacao": "48,9 nas duas; 1,2 ms mais caro que o shoelace e painel md5-idêntico."
+        },
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 47.8,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0",
+            "camera": "ROOM_ANGLE 0",
+            "build": "determinante com profundidade média (f9c2)",
+            "configuracao": "GE_MIP_EYE 2"
+          },
+          "metodo": "linha 8 do HUD (s)",
+          "observacao": "Empate dentro do ruído; mesmos níveis (2/25/619) e mesmo painel."
+        },
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 46.5,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0",
+            "camera": "ROOM_ANGLE 0",
+            "build": "shoelace com cantos limitados a ±12000 e área de 32 bits (f9e/f9e2/f9f)",
+            "configuracao": "GE_MIP_AREA32 1"
+          },
+          "metodo": "linha 8 do HUD (s), duas repetições e build entregue",
+          "observacao": "46,5 nas três; painel md5-idêntico ao de 47,7; Bk d4,4 m644/2/0 r152 e0."
+        },
+        {
+          "indicador": "contagem",
+          "valor": 0,
+          "unidade": "faces",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0",
+            "build": "sonda de divergência (f9p)",
+            "configuracao": "dois seletores calculados, desenho pelo shoelace"
+          },
+          "metodo": "contador lodEyeDiv/lodEyeMax na linha 21 do HUD",
+          "observacao": "e0/0: o determinante e o shoelace escolheram o mesmo nível em todas as faces."
+        },
+        {
+          "indicador": "contagem",
+          "valor": 0,
+          "unidade": "faces",
+          "condicao": {
+            "cena": "Bmori1_room_0",
+            "camera": "ROOM_ANGLE 0, 0x1000 e 0x2000",
+            "build": "sonda de limite (g5/g2/g4)",
+            "configuracao": "GE_MIP_AREA32 1"
+          },
+          "metodo": "contador lodClamp na linha 22 do HUD, com md5 do painel por ângulo",
+          "observacao": "c0 nos três ângulos; md5 igual ao build sem limite em 0°, 22,5° (d1e0298…) e 45° (d9c8326…)."
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "A/B no mesmo ângulo preso",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "shoelace 47,7; espaço de olho exato 48,9; profundidade média 47,8; área de 32 bits 46,5 ms"
+        },
+        {
+          "tipo": "divergência de nível face a face",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "0 de 646 faces com nível diferente entre os dois seletores"
+        },
+        {
+          "tipo": "limite de 32 bits por ângulo",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "0 faces limitadas em 0°, 22,5° e 45°; md5 do painel igual em cada par"
+        },
+        {
+          "tipo": "build entregue",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "s46,5, FPS 19, f50,1 w333, Bk d4,4 m644/2/0 r152 e0, sem avisos de compilação"
+        }
+      ],
+      "problemas": [
+        {
+          "id": "OTD-027-P1",
+          "descricao": "A direção publicada na fase 8 — a formulação por área em espaço de olho como próximo corte de custo — foi medida e refutada: exata custa +1,2 ms, profundidade média empata. O custo está no tamanho dos inteiros, não na formulação.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-027-P2",
+          "descricao": "O limite de ±750 px por canto é mudança de comportamento verificada por contador em uma sala e três vistas; uma parede que encha a tela de muito perto pode atingi-lo.",
+          "estado": "pendente"
+        },
+        {
+          "id": "OTD-027-P3",
+          "descricao": "A cadeia ainda custa +16,5 ms, dominada pelas multiplicações de 64 bits da projeção por canto; novos cortes exigem mudar a projeção, não a área.",
+          "estado": "pendente"
+        }
+      ],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Comparar a paleta decorada da Bmori1_room_0 com referência do N64 no ângulo preso.",
+        "Cobrir G_TT_IA16 e a segunda sala com os ids de objeto montados como segmentos.",
+        "Varredura de ROOM_ANGLE com grão e custo por vista, ainda pendente desde a fase 7."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 9 — a área em espaço de olho empatou; o ganho estava no tamanho do inteiro (2026-10-27)"
+        }
+      ],
+      "subestado": "cadeia de mip ainda custa +16,5 ms; limite de 750 px sem disparo em três ângulos",
+      "dependencias": [
+        "OTD-026"
+      ]
+    },
+    {
+      "id": "OTD-028",
+      "tipo": "entrega",
+      "titulo": "A sala estava branca porque o port a pintava de branco",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "10",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "A sala parecia sem cor porque o tradutor desenhava todos os triângulos texturados em branco. A própria lista da sala manda usar a cor de cada vértice quando não há iluminação, e essa cor existe nos dados: média de 32 % do brilho, toda em tons quentes. Passar a usá-la escureceu o painel em 71 % e trouxe o gradiente de pedra da sala, ao preço de 0,5 ms e sem mudar o FPS. Um censo das 359 salas mostrou que 82,8 % dos 140 mil triângulos já são cobertos e que a maior lacuna restante é o lerp entre duas texturas, com 14,9 %.",
+      "estudo_engenharia": {
+        "problema": "O painel da Bmori1_room_0 saía cinza-claro e liso, e a fase 9 não sabia dizer se era paleta, textura ou combiner. Não há emulador de N64 nesta máquina para uma referência visual, então a pergunta virou: o que as 646 faces pedem ao combiner e o que o port faz com esse pedido?",
+        "investigacao": "Censo offline das 359 salas do jogo, atribuindo cada triângulo ao G_SETCOMBINE, ao OtherMode e ao modo de geometria em vigor, com a mesma regra de classificação do decodeCC em C; censo separado das cores de vértice (todos os 979 vértices carregados na sala) e dos G_MOVEWORD; e um A/B no emulador com um único interruptor, GE_VTX_SHADE, na mesma linhagem de build.",
+        "decisao": "Usar o canal cn do vértice como SHADE nos triângulos texturados MODULATE quando G_LIGHTING está limpo, que é o que a lista da sala pede, e deixar DECAL, combiner não modelado e superfície iluminada em branco. Não implementar PRIM: ele vale 2 % dos triângulos e nas salas que mais o usam vem acompanhado de G_LIGHTING, que o port não calcula.",
+        "resultado": "Bmori1_room_0 tem 611 triângulos MODULATE e 35 de duas texturas; 979 vértices carregados, média (96, 81, 59), luminância média 32,4 % de 255, nenhum com azul acima do vermelho e nenhum G_MOVEWORD. Painel: md5 05992cb5… com branco e 8b5420d1… com a cor do vértice, luminância média 47,5 → 13,6 (−71 %) e pixels de dominância vermelha 1,1 % → 8,5 %, com contadores idênticos (s611 l0 o35) e duas capturas de cada lado. No jogo inteiro: 140 000 triângulos, 82,8 % cobertos, 15,0 % com duas texturas e 14,9 % pedindo SHADE iluminado.",
+        "limitacao": "O ganho é visual e custa 0,5 ms (1,1 % do render), sem mudar FPS. A conferência é contra o que a lista pede, não contra uma imagem de referência do N64, que esta máquina não tem. Só uma sala foi vista no emulador; as outras 358 foram lidas offline. 20 808 triângulos (14,9 %) pedem iluminação do RSP e continuam brancos de propósito; a família de duas texturas (20 891 triângulos, 137 salas) continua não modelada."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "O ganho é visual e custa 0,5 ms (1,1 % do render), sem mudar FPS. A conferência é contra o que a lista pede, não contra uma imagem de referência do N64, que esta máquina não tem. Só uma sala foi vista no emulador; as outras 358 foram lidas offline. 20 808 triângulos (14,9 %) pedem iluminação do RSP e continuam brancos de propósito; a família de duas texturas (20 891 triângulos, 137 salas) continua não modelada."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-028",
+          "publicada_no_site": true,
+          "arquivos_publicados": [
+            "assets/oot-dsi/otd-028-f10e-top.png"
+          ],
+          "observacao": "Pasta de evidência do projeto; apenas as capturas listadas em evidencias_publicadas foram copiadas para o site."
+        }
+      ],
+      "medicoes": [
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 46.6,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0",
+            "build": "mesma linhagem com GE_VTX_SHADE 0 (f10c/f10c2)",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_EYE 0, GE_MIP_AREA32 1"
+          },
+          "metodo": "linha FPS do HUD (s), duas capturas",
+          "observacao": "46,6 nas duas; FPS 19; md5 do painel 05992cb58c8229ba3b60a28f949e2e93."
+        },
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 47.1,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0",
+            "build": "entregue com GE_VTX_SHADE 1 (f10d/f10d2/f10e)",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_EYE 0, GE_MIP_AREA32 1"
+          },
+          "metodo": "linha FPS do HUD (s), três capturas",
+          "observacao": "47,1 nas três; FPS 19, f50,1 w333; md5 do painel 8b5420d114b4746703b78e3ad4828f2a."
+        },
+        {
+          "indicador": "percentual",
+          "valor": 47.5,
+          "unidade": "% de 255",
+          "condicao": {
+            "cena": "Bmori1_room_0, painel 512x384 da captura f10c",
+            "camera": "ROOM_ANGLE 0",
+            "build": "GE_VTX_SHADE 0"
+          },
+          "metodo": "ferramentas/medir_painel.py, luminância Rec.601 média sobre todos os pixels (preto = 0)",
+          "observacao": "33,4 % dos pixels acima de 20."
+        },
+        {
+          "indicador": "percentual",
+          "valor": 13.6,
+          "unidade": "% de 255",
+          "condicao": {
+            "cena": "Bmori1_room_0, painel 512x384 da captura f10e",
+            "camera": "ROOM_ANGLE 0",
+            "build": "GE_VTX_SHADE 1 (entregue)"
+          },
+          "metodo": "ferramentas/medir_painel.py, mesma definição do lado branco",
+          "observacao": "−71 % face ao branco; 28,2 % dos pixels acima de 20; dominância vermelha 1,1 % → 8,5 %."
+        },
+        {
+          "indicador": "contagem",
+          "valor": 611,
+          "unidade": "triângulos",
+          "condicao": {
+            "cena": "Bmori1_room_0",
+            "camera": "ROOM_ANGLE 0",
+            "build": "entregue"
+          },
+          "metodo": "contador s da linha 20 do HUD, com o censo offline como conferência",
+          "observacao": "Censo: 611 MODULATE / 35 OTHER; HUD: s611 l0 o35."
+        },
+        {
+          "indicador": "contagem",
+          "valor": 979,
+          "unidade": "vértices",
+          "condicao": {
+            "cena": "Bmori1_room_0",
+            "camera": "não se aplica (offline)",
+            "build": "assets extraídos do jogo (análise offline)"
+          },
+          "metodo": "ferramentas/analisar_vertices.py, todo vértice carregado por G_VTX do segmento 3",
+          "observacao": "Média cn (96, 81, 59); 0 com azul acima do vermelho; 5 branco puro; 0 G_MOVEWORD."
+        },
+        {
+          "indicador": "percentual",
+          "valor": 32.4,
+          "unidade": "% de 255",
+          "condicao": {
+            "cena": "Bmori1_room_0",
+            "camera": "não se aplica (offline)",
+            "build": "assets extraídos do jogo (análise offline)"
+          },
+          "metodo": "ferramentas/analisar_vertices.py, luminância Rec.601 média dos 979 vértices",
+          "observacao": "82,7 de 255."
+        },
+        {
+          "indicador": "contagem",
+          "valor": 140000,
+          "unidade": "triângulos",
+          "condicao": {
+            "cena": "359 salas extraídas do jogo",
+            "camera": "não se aplica (offline)",
+            "build": "assets extraídos do jogo (análise offline)"
+          },
+          "metodo": "ferramentas/analisar_combiner.py --todas",
+          "observacao": "82,8 % MODULATE, 17,2 % OTHER; 28 salas de shape imagem e 1 sem triângulos puladas."
+        },
+        {
+          "indicador": "percentual",
+          "valor": 14.9,
+          "unidade": "% dos triângulos",
+          "condicao": {
+            "cena": "359 salas extraídas do jogo",
+            "camera": "não se aplica (offline)",
+            "build": "assets extraídos do jogo (análise offline)"
+          },
+          "metodo": "ferramentas/analisar_combiner.py --todas, assinaturas OTHER",
+          "observacao": "Família (TEXEL1-TEXEL0)*ENVA+TEXEL0: 20 891 triângulos; a forma base sozinha são 19 357 em 137 salas."
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "A/B com um único interruptor na mesma linhagem de build",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "GE_VTX_SHADE 0 → md5 05992cb5…, L 47,5; 1 → md5 8b5420d1…, L 13,6; duas capturas por lado, md5 igual dentro de cada lado e igual às capturas antigas f10a/f10b"
+        },
+        {
+          "tipo": "contadores do runtime contra o censo offline",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "HUD s611 l0 o35 contra censo 611 MODULATE / 0 com luz / 35 OTHER"
+        },
+        {
+          "tipo": "censos offline sobre os assets extraídos",
+          "ambiente": "computador, sem emulador",
+          "resultado": "359 salas, 140 000 triângulos classificados; 979 vértices da sala contados; nenhum G_MOVEWORD na Bmori1_room_0"
+        },
+        {
+          "tipo": "build entregue",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "s47,1, FPS 19, f50,1 w333, Bk d4,4 m644/2/0 r152 e0, sem avisos de compilação"
+        }
+      ],
+      "problemas": [
+        {
+          "id": "OTD-028-P1",
+          "descricao": "O comentário do ge_draw.c justificava o branco com uma medição falsa: dizia que 605 de 979 vértices tinham azul acima do vermelho e que o cn não era cor. Medido: 0 de 979, média (96, 81, 59), e a sala não emite G_MOVEWORD.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-028-P2",
+          "descricao": "O censo de vértices nasceu com G_VTX, G_MOVEWORD e o índice do moveword errados e reportou zero vértices em todas as entradas; corrigido contra os constantes de f3dex2.h.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-028-P3",
+          "descricao": "G_LIGHTING segue sem estágio de iluminação: 20 808 triângulos (14,9 %) pedem SHADE calculado pelo RSP e continuam brancos.",
+          "estado": "pendente"
+        },
+        {
+          "id": "OTD-028-P4",
+          "descricao": "A família de duas texturas (TEXEL1-TEXEL0)*ENVA+TEXEL0, 20 891 triângulos em 137 salas, continua não modelada; nesta sala são 35 faces.",
+          "estado": "pendente"
+        },
+        {
+          "id": "OTD-028-P5",
+          "descricao": "A cor de vértice custa 0,5 ms reproduzíveis (46,6 → 47,1) sem que eu tenha identificado a origem, já que os dois lados chamam glColor3b uma vez por vértice.",
+          "estado": "pendente"
+        }
+      ],
+      "retratacoes": [],
+      "proximos_passos": [
+        "Medir quantos dos 20 891 triângulos de duas texturas estão em salas que também precisam de luz.",
+        "Construir o lerp (TEXEL1-TEXEL0)*ENVA+TEXEL0 em segunda passada com blend de framebuffer.",
+        "Cobrir G_TT_IA16 e a segunda sala com os ids de objeto montados como segmentos.",
+        "Varredura de ROOM_ANGLE com grão e custo por vista, pendente desde a fase 7.",
+        "Atacar o resto dos 16,5 ms da cadeia de mip, na projeção por canto."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 10 — a sala estava branca porque o port a pintava de branco (2026-10-27)"
+        }
+      ],
+      "subestado": "cor de vértice no MODULATE sem luz; 35 faces de duas texturas e 14,9 % do jogo com SHADE iluminado seguem fora",
+      "dependencias": [
+        "OTD-027"
+      ]
+    },
+    {
+      "id": "OTD-029",
+      "tipo": "entrega",
+      "titulo": "O lerp de duas texturas virou segunda passada, e o alpha da segunda imagem quase o engoliu",
+      "data": "2026-10-27",
+      "frente": "motor",
+      "fase": "11",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "A maior lacuna do tradutor era o efeito que mistura duas texturas pela transparência. O DS não consegue ler a tela como fonte, mas consegue misturar com o que já está desenhado: a superfície é desenhada uma segunda vez com a segunda imagem e o peso do efeito. Na sala de teste isso muda exatamente 560 pixels, com o preço de 1,3 ms. O caminho quase morreu em silêncio porque a segunda imagem tem transparência zero em todos os texéis e o recorte global do motor a descartava inteira; o censo mostra que 11 % dos triângulos dessa família dependiam desse conserto. Correção posterior: o build monta a cena da sala carregada e a paleta vem dela; o número de 42 % vale para as salas que a demonstração ainda não carrega.",
+      "estudo_engenharia": {
+        "problema": "A fase 10 mediu que (TEXEL1−TEXEL0)·ENVA+TEXEL0 era a maior família fora do estágio fixo (20 891 triângulos, 14,9 % do jogo). O geometry engine do DS tem um estágio de textura e não lê o framebuffer como fonte do combiner, mas o blend lê o destino. A pergunta era se uma segunda passada sobre o T0 já desenhado reproduz a aritmética do RDP nessa sala, quanto custa e quantos triângulos do jogo ela de fato alcança.",
+        "investigacao": "Decodificador: modo F3_CC_LERP próprio, com ENVA carregado do G_SETENVCOLOR. Ponte: segunda passada com POLY_ALPHA(ENVA), POLY_CULL_NONE e POLY_ID por triângulo. A/B com GE_LERP 0/1/2 na mesma linhagem de build, duas capturas intercaladas de cada lado. Diagnóstico por sondas: bind de textura branca no lugar de T1, T1 só opaco, lerp sem o bake opaco. Censo offline do alpha da segunda imagem seguindo G_DL, e traço da ordem dos comandos de uma entrada da sala.",
+        "decisao": "Entregar as duas passadas com o bake da segunda imagem opaco, porque o alpha de saída deste combiner vem do mux de alpha do RDP, não do TEXEL1. Manter GE_LERP 1 só como sonda. Usar 128 como ENVA quando a lista não escreve G_SETENVCOLOR, com contador visível no HUD, em vez de esconder a escolha num comentário.",
+        "resultado": "GE_LERP 0 reproduz o painel da fase 10 byte a byte (md5 8b5420d1…); GE_LERP 2 muda 560 pixels numa caixa x 232..283, y 362..383, que são as 35 faces da laje. Bl 20/646 → 55/646 (35 segundas passadas por quadro) e r152 → r247 (rebinds por quadro). Custo 47,5 → 48,8 ms (+1,3 ms, 2,7 %), FPS 19 nos dois. Censo: 21 041 triângulos no ciclo 0; 2 390 (11,4 %) com segunda imagem RGBA16 toda alpha-0, que perderiam a passada sem o bake opaco; 8 858 (42,1 %) com a imagem no segmento 2; 4 063 (19,3 %) não RGBA16.",
+        "limitacao": "É aproximação de alpha: o RDP usa ENVA/255 e o GE usa POLY_ALPHA/31, com erro de meio nível (~1,6 %). O método depende de o T0 estar no destino; não há leitura de framebuffer. 42,1 % das segundas imagens estão no arquivo da cena, que o build não monta, e degradam para T0 só. 19,3 % não são RGBA16. Uma sala, um ângulo, em emulador; as outras 358 salas foram lidas offline. Correção (OTD-030): o build monta a cena da sala carregada (BMORI1.SCE como segmento 2; a paleta da sala vem de lá, linha 9 do HUD com pS:14288). As 35 faces da Bmori1 têm a segunda imagem no segmento 3; o 42,1 % descreve as salas que o demo não carrega."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "É aproximação de alpha: o RDP usa ENVA/255 e o GE usa POLY_ALPHA/31, com erro de meio nível (~1,6 %). O método depende de o T0 estar no destino; não há leitura de framebuffer. 42,1 % das segundas imagens estão no arquivo da cena, que o build não monta, e degradam para T0 só. 19,3 % não são RGBA16. Uma sala, um ângulo, em emulador; as outras 358 salas foram lidas offline. Correção (OTD-030): o build monta a cena da sala carregada (BMORI1.SCE como segmento 2; a paleta da sala vem de lá, linha 9 do HUD com pS:14288). As 35 faces da Bmori1 têm a segunda imagem no segmento 3; o 42,1 % descreve as salas que o demo não carrega."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-029",
+          "publicada_no_site": false,
+          "arquivos_publicados": [],
+          "observacao": "Pasta de evidência mantida no projeto; nenhuma captura desta entrega foi publicada nesta página."
+        }
+      ],
+      "medicoes": [
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 47.5,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0",
+            "build": "GE_LERP 0 (f11k/f11m)",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_EYE 0, GE_MIP_AREA32 1"
+          },
+          "metodo": "linha FPS do HUD (s), duas capturas",
+          "observacao": "47,5 nas duas; FPS 19, f50,1 w349; md5 do painel 8b5420d114b4746703b78e3ad4828f2a."
+        },
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 48.8,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0",
+            "build": "GE_LERP 2 entregue (f11j/f11n)",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_EYE 0, GE_MIP_AREA32 1"
+          },
+          "metodo": "linha FPS do HUD (s), duas capturas",
+          "observacao": "48,8 nas duas; FPS 19, f50,1 w349; md5 do painel fa1c5bc0a368ae6f5e8cb81858dae114."
+        },
+        {
+          "indicador": "contagem",
+          "valor": 560,
+          "unidade": "pixels diferentes de 196 608",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0",
+            "build": "GE_LERP 2 contra GE_LERP 0",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_EYE 0, GE_MIP_AREA32 1"
+          },
+          "metodo": "ferramentas/comparar_paineis.py sobre f11n_top.png e f11m_top.png; repetido com f11j/f11k",
+          "observacao": "Caixa x 232..283, y 362..383 nos dois pares; a região é a laje de 35 faces."
+        },
+        {
+          "indicador": "contagem",
+          "valor": 35,
+          "unidade": "segundas passadas por quadro",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0",
+            "build": "GE_LERP 2 entregue",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_EYE 0, GE_MIP_AREA32 1"
+          },
+          "metodo": "delta do xluTris na linha 21 do HUD (Bl 20/646 → 55/646), conferido com o censo da sala",
+          "observacao": "20 são as faces translúcidas da sala; os 35 novos são a família do lerp."
+        },
+        {
+          "indicador": "contagem",
+          "valor": 247,
+          "unidade": "rebinds de textura por quadro",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0",
+            "build": "GE_LERP 2 entregue",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_EYE 0, GE_MIP_AREA32 1"
+          },
+          "metodo": "campo r da linha 22 do HUD (Bk d4,4 m644/2/0 r247 e0) contra r152 com GE_LERP 0",
+          "observacao": "+95 rebinds, ~2,7 por triângulo do lerp; é o custo de FIFO que a fase 12 vai separar."
+        },
+        {
+          "indicador": "contagem",
+          "valor": 21041,
+          "unidade": "triângulos",
+          "condicao": {
+            "cena": "359 salas extraídas",
+            "camera": "não se aplica (offline)",
+            "build": "assets extraídos do jogo (análise offline)",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_EYE 0, GE_MIP_AREA32 1"
+          },
+          "metodo": "ferramentas/analisar_lerp_alpha.py, seguindo G_DL dentro do segmento 3",
+          "observacao": "Ciclo 0 (TEXEL1−TEXEL0)·ENVA+TEXEL0; 8 120 imagens no segmento 3 e 8 858 no segmento 2."
+        },
+        {
+          "indicador": "percentual",
+          "valor": 11.4,
+          "unidade": "% dos triângulos da família",
+          "condicao": {
+            "cena": "359 salas extraídas",
+            "camera": "não se aplica (offline)",
+            "build": "assets extraídos do jogo (análise offline)",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_EYE 0, GE_MIP_AREA32 1"
+          },
+          "metodo": "ferramentas/analisar_lerp_alpha.py, bit 15 de todos os texéis da segunda imagem",
+          "observacao": "2 390 triângulos; sem o bake opaco a segunda passada deles seria descartada pelo recorte global."
+        },
+        {
+          "indicador": "percentual",
+          "valor": 42.1,
+          "unidade": "% dos triângulos da família",
+          "condicao": {
+            "cena": "359 salas extraídas",
+            "camera": "não se aplica (offline)",
+            "build": "assets extraídos do jogo (análise offline)",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_EYE 0, GE_MIP_AREA32 1"
+          },
+          "metodo": "ferramentas/analisar_lerp_alpha.py, segmento do G_SETTIMG da segunda imagem",
+          "observacao": "8 858 triângulos com a imagem no segmento 2 (arquivo da cena), que o build não monta; degradam para T0 só."
+        },
+        {
+          "indicador": "percentual",
+          "valor": 82.2,
+          "unidade": "% dos triângulos da família",
+          "condicao": {
+            "cena": "359 salas extraídas",
+            "camera": "não se aplica (offline)",
+            "build": "assets extraídos do jogo (análise offline)",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_EYE 0, GE_MIP_AREA32 1"
+          },
+          "metodo": "ferramentas/analisar_combiner.py --todas --lerp --luz, G_LIGHTING por triângulo",
+          "observacao": "16 608 de 20 214 na forma base; 3 606 pedem luz."
+        },
+        {
+          "indicador": "fps",
+          "valor": 19,
+          "unidade": "quadros por segundo",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0",
+            "build": "GE_LERP 2 entregue",
+            "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_EYE 0, GE_MIP_AREA32 1"
+          },
+          "metodo": "linha FPS do HUD, contagem de quadros na última janela de 1 s",
+          "observacao": "19 em todas as capturas dos dois lados; o valor é limitado pela espera de VBlank, não pelo render."
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "A/B intercalado com um único interruptor na mesma linhagem de build",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "GE_LERP 0 → md5 8b5420d1… e s47,5 em f11k e f11m; GE_LERP 2 → md5 fa1c5bc0… e s48,8 em f11j e f11n; diff de 560 px na mesma caixa nos dois pares"
+        },
+        {
+          "tipo": "sondas de diagnóstico do caminho da segunda passada",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "f11f (textura branca no lugar de T1) muda 560 px; f11g (lerp sem bake opaco) muda 0 px; f11h (T1 só opaco) muda 560 px"
+        },
+        {
+          "tipo": "contadores do runtime contra o censo offline",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "Bl 20/646 → 55/646 confere com os 35 triângulos da entrada 2; r152 → r247; s611 l0 o0 contra o censo 611 MODULATE / 35 na família"
+        },
+        {
+          "tipo": "censos offline sobre os assets extraídos",
+          "ambiente": "computador, sem emulador",
+          "resultado": "21 041 triângulos da família; 2 390 com segunda imagem toda alpha-0; 8 858 no segmento 2; ordem SETTIMG→SETTILE(7)→LOADBLOCK→SETTILE(1)→SETTILESIZE(1)→SETCOMBINE na entrada 2"
+        },
+        {
+          "tipo": "build entregue",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "s48,8, FPS 19, f50,1 w349, Bl 55/646, Bk d4,4 m644/2/0 r247 e0, sem avisos de compilação"
+        }
+      ],
+      "problemas": [
+        {
+          "id": "OTD-029-P1",
+          "descricao": "O G_SETTILESIZE do tile 1 não copiava loadWords, o bake recusava a segunda imagem pela razão 5 e a passada sumia sem tocar no painel.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-029-P2",
+          "descricao": "A segunda imagem é RGBA16 com o bit de alpha limpo em todos os texéis em 2 390 triângulos; o GL_ALPHA_TEST global descartava a passada. Corrigido com o bake opaco, que é o que este combiner pede.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-029-P3",
+          "descricao": "A hipótese de que profundidade igual faria o GE recusar a segunda passada foi testada com um viés de −8 no z e refutada: com o alpha consertado a passada desenha com viés zero. O viés foi removido.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-029-P4",
+          "descricao": "A captura f11e saiu 160x28 com painel branco (grab de janela inválido) e foi lida por um instante como resultado; refeita como f11e2.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-029-P5",
+          "descricao": "O primeiro censo do alpha não seguia G_DL e via 12 221 de 21 041 triângulos (58 %), reportando 2 294 alpha-0 e 6 322 imagens no segmento 2. Corrigido seguindo os ramos: 2 390 e 8 858.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-029-P6",
+          "descricao": "42,1 % das segundas imagens da família vivem no segmento 2 (arquivo da cena), que o build não monta; nesses materiais só o T0 é desenhado. Correção (OTD-030): o segmento 2 é montado para a sala carregada; o que falta é carregar a cena de cada sala nova.",
+          "estado": "pendente"
+        },
+        {
+          "id": "OTD-029-P7",
+          "descricao": "4 063 triângulos (19,3 %) têm segunda imagem CI/IA/I, fora do censo de alpha e do caminho RGBA16.",
+          "estado": "pendente"
+        },
+        {
+          "id": "OTD-029-P8",
+          "descricao": "O custo de +1,3 ms havia sido anotado como dentro do ruído com uma captura por lado; com o A/B intercalado ele se repete nos dois pares e é custo real.",
+          "estado": "corrigido"
+        }
+      ],
+      "retratacoes": [
+        {
+          "afirmacao_anterior": "O censo do alpha da segunda imagem cobria a família e dava 2 294 triângulos alpha-0 e 6 322 imagens no segmento 2.",
+          "onde_foi_publicada": "Medição intermediária da fase 11, antes de a ferramenta ser arquivada.",
+          "evidencia_nova": "O primeiro censo andava só a lista linear de cada entrada e via 12 221 de 21 041 triângulos (58 %). Seguindo G_DL dentro do segmento 3, o total chega aos 21 041 e os números viram 2 390 alpha-0 e 8 858 no segmento 2.",
+          "conclusao_vigente": "A família tem 21 041 triângulos; 11,4 % dependiam do bake opaco e 42,1 % têm a segunda imagem no arquivo da cena.",
+          "registrada_em": "OTD-029"
+        }
+      ],
+      "proximos_passos": [
+        "Medir com builds intercalados o custo das trocas de textura e da cadeia de mip, com qualidade e desempenho na mesma tabela.",
+        "Montar o arquivo da cena (segmento 2) para resolver 42,1 % das segundas imagens da família.",
+        "Cobrir G_TT_IA16 e as segundas imagens CI/IA/I.",
+        "Segunda sala com os ids de objeto montados como segmentos.",
+        "Varredura de ROOM_ANGLE com grão e custo por vista."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 11 — o lerp de duas texturas virou segunda passada, e o alpha da segunda imagem quase o engoliu (2026-10-27)"
+        }
+      ],
+      "subestado": "segunda passada com POLY_ALPHA(ENVA) na Bmori1_room_0; 42 % das segundas imagens do jogo vivem no segmento 2 (arquivo da cena), que o build não monta",
+      "dependencias": [
+        "OTD-028"
+      ]
+    },
+    {
+      "id": "OTD-030",
+      "tipo": "entrega",
+      "titulo": "A troca de textura custa 0,45 µs; quem cobra é a aritmética do mip",
+      "data": "2026-10-27",
+      "frente": "motor+jogo",
+      "fase": "12",
+      "estado": "testado_emulador",
+      "build": {
+        "identificador": "árvore local sem identificador de versão",
+        "commit": null
+      },
+      "resumo": "Antes de ampliar efeitos, o projeto separou o preço de trocar de textura do preço de escolher mipmap. Forçar 662 trocas a mais no mesmo quadro não mudou um único pixel e custou 0,3 ms; a cadeia de mipmap, por outro lado, custa 16,4 ms e 96 % disso é a conta que escolhe o nível, não a troca em si. O ganho visual (31 % menos ruído) segue registrado como um compromisso em avaliação, porque vale 34 % do tempo de render e foi medido numa sala e num ângulo. A mesma entrega documenta o que cada contador da telemetria mede: FPS da janela de 1 s, intervalo do loop, tempo de render de CPU, recorde de quadro e taxa de lógica de 20 Hz.",
+      "estudo_engenharia": {
+        "problema": "A fase 8 tinha juntado num número só três custos diferentes da cadeia de mip — a aritmética do seletor, a escolha/upload de nível e a troca de textura — e publicado que a otimização que pagava era agrupar primitivos por nível. Nenhum build tinha preçado uma troca de textura isolada, e a semântica dos contadores do HUD nunca tinha sido escrita contra o código.",
+        "investigacao": "Sonda GE_TEX_REBIND_PROBE em dois pontos: bindTex deixa de devolver cedo para o mesmo id, e putFan refaz uma ligação por triângulo com o id já ligado (não a imagem-base). Quatro builds na mesma linhagem, duas capturas por build: MIP_MAX 2 entregue, MIP_MAX 0, MIP_MAX 2 + sonda de troca, MIP_MAX 2 + MIP_NULL. Grão do painel por speck2.py, md5 por comparar_paineis.py, tempos e contadores pela linha 8/19/21/22 do HUD.",
+        "decisao": "Manter a cadeia ligada como compromisso em avaliação, com MIP_MAX 0 declarado como alternativa, em vez de aposentar a cadeia ou esconder o custo. Manter a sonda de troca como interruptor de medição em 0, não apagar. Corrigir a definição de f e de FPS no JSON e registrar a semântica de w e dos ticks.",
+        "resultado": "MAX 0: grão 4,22, s32,4, FPS 20, r136, md5 92d399e9…. MAX 2: grão 2,91, s48,8, FPS 19, r247, md5 fa1c5bc0…. MIP_NULL: s48,1 e o painel do MAX 0 — a aritmética vale 15,7 ms dos 16,4 ms. Sonda de troca: s49,1 com r909, painel byte a byte igual; 662 trocas a mais custam 0,3 ms, ou 0,45 µs por troca (limite superior, inclui fechar e reabrir o lote). Uploads b0 nos quatro builds: o cache acerta tudo em repouso.",
+        "limitacao": "Uma sala e um ângulo, em emulador. O preço da troca inclui o corte do lote; o custo por nível inclui a varredura do cache. O rasterizador não entra em s. A cadeia continua compromisso em avaliação: −31 % de grão por +16,4 ms (34 % do render), não fechado. Sem atores, segunda sala, colisão ou hardware."
+      },
+      "validacao": {
+        "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+        "modo": "DS mode",
+        "emulador": "melonDS 1.1",
+        "clock_mhz": 67,
+        "hardware_fisico": false,
+        "observacao": "Resultado de emulador; não é hardware físico."
+      },
+      "limitacoes": [
+        "Uma sala e um ângulo, em emulador. O preço da troca inclui o corte do lote; o custo por nível inclui a varredura do cache. O rasterizador não entra em s. A cadeia continua compromisso em avaliação: −31 % de grão por +16,4 ms (34 % do render), não fechado. Sem atores, segunda sala, colisão ou hardware."
+      ],
+      "evidencias": [
+        {
+          "referencia": "evidencias/OTD-030",
+          "publicada_no_site": true,
+          "arquivos_publicados": [
+            "assets/oot-dsi/otd-030-f12a1.png",
+            "assets/oot-dsi/otd-030-f12a1-top.png"
+          ],
+          "observacao": "Pasta de evidência do projeto; apenas as capturas listadas em evidencias_publicadas foram copiadas para o site."
+        }
+      ],
+      "medicoes": [
+        {
+          "indicador": "grao",
+          "valor": 4.22,
+          "unidade": "média de |ΔLuminância| entre pixels vizinhos",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0, ROOM_SPIN 0",
+            "build": "GE_TEX_MIP_MAX 0 (f12b1/f12b2)",
+            "configuracao": "GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048"
+          },
+          "metodo": "ferramentas/speck2.py sobre o recorte _top.png",
+          "observacao": "4,22 nas duas capturas; md5 92d399e9a2063e069dff0085d751aa05."
+        },
+        {
+          "indicador": "grao",
+          "valor": 2.91,
+          "unidade": "média de |ΔLuminância| entre pixels vizinhos",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0, ROOM_SPIN 0",
+            "build": "GE_TEX_MIP_MAX 2 entregue (f12a1/f12a3)",
+            "configuracao": "GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048"
+          },
+          "metodo": "ferramentas/speck2.py sobre o recorte _top.png",
+          "observacao": "2,91 nas duas capturas; md5 fa1c5bc0a368ae6f5e8cb81858dae114."
+        },
+        {
+          "indicador": "percentual",
+          "valor": -31.0,
+          "unidade": "% de variação do grão",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0, ROOM_SPIN 0",
+            "build": "GE_TEX_MIP_MAX 2 contra 0",
+            "configuracao": "GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048"
+          },
+          "metodo": "razão entre os dois grãos da mesma rodada",
+          "observacao": "4,22 → 2,91. O grão absoluto não é comparável com o 9,09 da fase 7, medido quando o painel ainda era pintado de branco; vale a razão."
+        },
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 32.4,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0, ROOM_SPIN 0",
+            "build": "GE_TEX_MIP_MAX 0 (f12b1/f12b2)",
+            "configuracao": "GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048"
+          },
+          "metodo": "linha FPS do HUD (s), duas capturas",
+          "observacao": "32,4 nas duas; FPS 20, f33,4, w249; r136; m0/0/0."
+        },
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 48.8,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0, ROOM_SPIN 0",
+            "build": "GE_TEX_MIP_MAX 2 entregue (f12a1/f12a3)",
+            "configuracao": "GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048"
+          },
+          "metodo": "linha FPS do HUD (s), duas capturas",
+          "observacao": "48,8 nas duas; FPS 19, f50,1, w349; r247; m644/2/0."
+        },
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 48.1,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0, ROOM_SPIN 0",
+            "build": "GE_TEX_MIP_MAX 2 + GE_TEX_MIP_NULL (f12f1/f12f2)",
+            "configuracao": "GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048"
+          },
+          "metodo": "linha FPS do HUD (s), duas capturas",
+          "observacao": "48,1; FPS 19, f50,1; r136; painel idêntico ao MAX 0 (92d399e9…). Separa a aritmética (15,7 ms) do resto (0,7 ms)."
+        },
+        {
+          "indicador": "tempo_render_ms",
+          "valor": 49.1,
+          "unidade": "ms",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0, ROOM_SPIN 0",
+            "build": "GE_TEX_MIP_MAX 2 + GE_TEX_REBIND_PROBE (f12e1/f12e2)",
+            "configuracao": "GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048"
+          },
+          "metodo": "linha FPS do HUD (s), duas capturas",
+          "observacao": "49,1; r909 contra r247; painel idêntico ao entregue (fa1c5bc0…, 0 px)."
+        },
+        {
+          "indicador": "contagem",
+          "valor": 662,
+          "unidade": "trocas de textura forçadas por quadro",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0, ROOM_SPIN 0",
+            "build": "GE_TEX_REBIND_PROBE contra o entregue",
+            "configuracao": "GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048"
+          },
+          "metodo": "diferença de r no HUD (909 − 247), duas capturas",
+          "observacao": "0,3 ms / 662 = 0,45 µs por troca; limite superior por incluir o corte do lote."
+        },
+        {
+          "indicador": "contagem",
+          "valor": 60576,
+          "unidade": "pixels diferentes de 196 608",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0, ROOM_SPIN 0",
+            "build": "sonda errada f12d1 (bind da imagem-base)",
+            "configuracao": "GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048"
+          },
+          "metodo": "ferramentas/comparar_paineis.py",
+          "observacao": "Caixa x 124..389, y 62..383. Religar a imagem-base derrubou o nível de mip; resultado negativo mantido."
+        },
+        {
+          "indicador": "fps",
+          "valor": 19,
+          "unidade": "quadros por segundo",
+          "condicao": {
+            "cena": "Bmori1_room_0, 646 triângulos",
+            "camera": "ROOM_ANGLE 0, ROOM_SPIN 0",
+            "build": "GE_TEX_MIP_MAX 2 entregue",
+            "configuracao": "GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048"
+          },
+          "metodo": "linha FPS do HUD",
+          "observacao": "20 com MAX 0; a diferença de um quadro é coerente com f50,1 e f33,4."
+        }
+      ],
+      "testes": [
+        {
+          "tipo": "A/B intercalado de quatro builds na mesma linhagem e ângulo",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "MAX 0: grão 4,22/s32,4/FPS 20/r136; MAX 2: 2,91/48,8/19/247; MIP_NULL: 4,22/48,1/19/136; sonda de troca: 2,91/49,1/19/909. Duas capturas por build com md5 idêntico dentro do build."
+        },
+        {
+          "tipo": "controle de que a sonda de troca não muda a imagem",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "f12e1/f12e2 com md5 fa1c5bc0… e 0 px de diferença contra f12a1; a sonda errada f12d1 mudou 60 576 px e foi descartada."
+        },
+        {
+          "tipo": "leitura dos contadores contra a decomposição de custo",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "r136 → r247 acompanha h101 → h207; b0 nos quatro builds; 662 trocas forçadas = 646 triângulos + 16 ligações redundantes."
+        },
+        {
+          "tipo": "build entregue",
+          "ambiente": "melonDS 1.1, modo DS, 67 MHz",
+          "resultado": "MIP_MAX 2, MIP_NULL 0, REBIND_PROBE 0; s48,8, FPS 19, f50,1 w349, md5 fa1c5bc0… igual ao da fase 11; compila sem avisos."
+        }
+      ],
+      "problemas": [
+        {
+          "id": "OTD-030-P1",
+          "descricao": "A primeira sonda só removeu o retorno cedo do bindTex e forçou apenas 16 trocas (r247 → r263, s48,3 contra 48,8), sem conclusão.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-030-P2",
+          "descricao": "A sonda por triângulo religava a imagem-base em vez do id corrente; derrubou o nível de mip e mudou 60 576 px. Corrigida para religar d->boundId.",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-030-P3",
+          "descricao": "O grão absoluto de 2026-10-27 (2,91) não é comparável ao 9,09 da fase 7, medido com o painel pintado de branco; o número comparável é a razão do A/B (−31 %).",
+          "estado": "corrigido"
+        },
+        {
+          "id": "OTD-030-P4",
+          "descricao": "O build de teto 0 emite -Wtype-limits em mipLimit porque o laço é inalcançável; o build entregue compila sem avisos.",
+          "estado": "pendente"
+        },
+        {
+          "id": "OTD-030-P5",
+          "descricao": "A cadeia de mip segue como compromisso em avaliação: −31 % de grão por +16,4 ms (34 % do render), medido numa sala e num ângulo.",
+          "estado": "pendente"
+        }
+      ],
+      "retratacoes": [
+        {
+          "afirmacao_anterior": "A otimização que paga é agrupar primitivos por nível e cortar os re-binds da cadeia de mip.",
+          "onde_foi_publicada": "Fase 8 (OTD-026), seção 38 do plano; repetida como direção na fase 9.",
+          "evidencia_nova": "Com 0,45 µs por troca, as 111 trocas de nível por quadro valem no máximo 0,7 ms — 4 % do custo da cadeia; 15,7 ms são a aritmética do seletor (build MIP_NULL).",
+          "conclusao_vigente": "O custo da cadeia é a aritmética por face; agrupar por nível não paga.",
+          "registrada_em": "OTD-030"
+        },
+        {
+          "afirmacao_anterior": "42,1 % das segundas imagens da família estão no segmento 2, que este build não monta.",
+          "onde_foi_publicada": "Fase 11 (OTD-029), limites e tabela de estado do motor.",
+          "evidencia_nova": "roomLoad lê BMORI1.SCE e chama f3SetSegment(st, OOT_SCENE_SEG, scene); a paleta da sala resolve de lá (pS:14288 na linha 9 do HUD). As 35 faces da Bmori1 têm T1 no segmento 3.",
+          "conclusao_vigente": "O caminho de textura resolve o segmento 2; o limite é carregar a cena de cada sala, não montar o segmento.",
+          "registrada_em": "OTD-030"
+        }
+      ],
+      "proximos_passos": [
+        "Fatia jogável: uma sala com Link controlável, câmera e colisão básica, com critérios próprios de validação.",
+        "Registrar as dependências que faltam para o Link real (objeto, animação, colisão da cena) antes de qualquer substituto.",
+        "Transição para uma segunda sala com ids de objeto montados como segmentos.",
+        "Montar o arquivo da cena (segmento 2) para resolver 42,1 % das segundas imagens do lerp.",
+        "Cobrir G_TT_IA16 e as segundas imagens CI/IA/I."
+      ],
+      "referencias_historicos": [
+        {
+          "arquivo": "HISTORICO_MOTOR_GRAFICO.md",
+          "secao": "Fase 12 — a troca de textura custa 0,45 µs; quem cobra é a aritmética do mip (2026-10-27)"
+        }
+      ],
+      "subestado": "sonda de troca de textura e re-medição do mip no mesmo ângulo preso; semântica dos contadores documentada; build entregue sem mudança de comportamento",
+      "dependencias": [
+        "OTD-029",
+        "OTD-027"
+      ]
+    }
+  ],
+  "evidencias_publicadas": [
+    {
+      "arquivo_site": "assets/oot-dsi/otd-019-cl1-top.png",
+      "tag": "cl1_top",
+      "descricao": "Cena sintética de teste do recorte no plano perto: polígonos coloridos atravessam a câmera.",
+      "cena": "cena sintética de teste de recorte",
+      "camera": "câmera de teste",
+      "build": "OTD-019",
+      "configuracao": "recorte no plano perto em espaço de olho",
+      "leitura": "Prova o comportamento do recorte, não o jogo.",
+      "entrega": "OTD-019"
+    },
+    {
+      "arquivo_site": "assets/oot-dsi/otd-023-bm33-top.png",
+      "tag": "bm33_top",
+      "descricao": "Estado anterior à cadeia de mip: a sala texturizada aparece com pontilhado colorido de alta frequência.",
+      "cena": "Bmori1_room_0, 646 triângulos",
+      "camera": "ROOM_ANGLE 0",
+      "build": "OTD-023, antes da cadeia de mip",
+      "configuracao": "sem cadeia de mip",
+      "leitura": "Estado superado, mantido como evidência da hipótese de paleta refutada.",
+      "entrega": "OTD-023"
+    },
+    {
+      "arquivo_site": "assets/oot-dsi/otd-024-mf0-top.png",
+      "tag": "mf0_top",
+      "descricao": "Estado anterior à cor de vértice: o painel ainda era pintado de branco pelo port.",
+      "cena": "Bmori1_room_0, 646 triângulos",
+      "camera": "ROOM_ANGLE 0",
+      "build": "OTD-024, cadeia de mip no teto 2",
+      "configuracao": "GE_TEX_MIP_MAX 2, sem cor de vértice",
+      "leitura": "Estado superado, mantido para comparação com o painel colorido.",
+      "entrega": "OTD-024"
+    },
+    {
+      "arquivo_site": "assets/oot-dsi/otd-028-f10e-top.png",
+      "tag": "f10e_top",
+      "descricao": "O mesmo painel depois de aplicar a cor de vértice no combiner: a pedra ganha o gradiente escuro da sala.",
+      "cena": "Bmori1_room_0, 646 triângulos",
+      "camera": "ROOM_ANGLE 0",
+      "build": "OTD-028, GE_VTX_SHADE 1",
+      "configuracao": "GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_AREA32 1",
+      "leitura": "Luminância média do painel caiu 71 %; o custo medido foi de 0,5 ms.",
+      "entrega": "OTD-028"
+    },
+    {
+      "arquivo_site": "assets/oot-dsi/otd-030-f12a1.png",
+      "tag": "f12a1",
+      "descricao": "Janela completa do melonDS: a sala na tela de cima e a telemetria na tela de baixo.",
+      "cena": "Bmori1_room_0, 646 triângulos",
+      "camera": "ROOM_ANGLE 0, ROOM_SPIN 0",
+      "build": "OTD-030, GE_TEX_MIP_MAX 2 entregue",
+      "configuracao": "GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048",
+      "leitura": "FPS 19, f 50,1 ms, s 48,8 ms, r 247. Captura de emulador, não de DSi físico.",
+      "entrega": "OTD-030"
+    },
+    {
+      "arquivo_site": "assets/oot-dsi/otd-030-f12a1-top.png",
+      "tag": "f12a1_top",
+      "descricao": "Recorte do painel 3D do mesmo build entregue, sem a telemetria da tela inferior.",
+      "cena": "Bmori1_room_0, 646 triângulos",
+      "camera": "ROOM_ANGLE 0, ROOM_SPIN 0",
+      "build": "OTD-030, GE_TEX_MIP_MAX 2 entregue",
+      "configuracao": "GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048",
+      "leitura": "Mesmo painel da janela completa; md5 fa1c5bc0a368ae6f5e8cb81858dae114.",
+      "entrega": "OTD-030"
+    }
+  ],
+  "nota_publicacao": "Recorte público derivado de dados/progresso.json do projeto. As 30 entregas OTD-001..OTD-030 estão incluídas; apenas seis capturas foram copiadas para o site. Nenhuma cópia de referência ou asset extraído acompanha este arquivo."
+}

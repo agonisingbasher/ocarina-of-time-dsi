@@ -1,0 +1,375 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agonisingbasher.github.io/personal-website/data/oot-dsi-progress.schema.json",
+  "title": "oot-dsi-progress.json — Ocarina of Time DSi",
+  "description": "Dados estruturados da apresentação pública do projeto Ocarina of Time DSi. Versão de esquema 1.0.0.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "projeto",
+    "estados",
+    "ambiente_padrao",
+    "medicoes_definicoes",
+    "entregas",
+    "evidencias_publicadas",
+    "nota_publicacao"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "projeto": {
+      "type": "object",
+      "required": [
+        "nome",
+        "descricao",
+        "alvo",
+        "base_de_codigo",
+        "ambiente_medicao_padrao",
+        "versionamento",
+        "aviso_emulador",
+        "codigo_de_terceiros",
+        "creditos",
+        "aviso_de_marca",
+        "aviso_de_assets"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "nome": { "type": "string" },
+        "descricao": { "type": "string" },
+        "alvo": { "type": "string" },
+        "base_de_codigo": { "type": "string" },
+        "ambiente_medicao_padrao": { "type": "string" },
+        "versionamento": { "type": "string" },
+        "aviso_emulador": { "type": "string" },
+        "codigo_de_terceiros": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/credito" }
+        },
+        "creditos": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/credito" }
+        },
+        "aviso_de_marca": { "type": "string" },
+        "aviso_de_assets": { "type": "string" }
+      }
+    },
+    "estados": {
+      "type": "object",
+      "required": [
+        "planejado",
+        "em_implementacao",
+        "implementado",
+        "testado_computador",
+        "testado_emulador",
+        "testado_hardware",
+        "parcial_bloqueado_regressao"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "planejado": { "$ref": "#/$defs/rotulo" },
+        "em_implementacao": { "$ref": "#/$defs/rotulo" },
+        "implementado": { "$ref": "#/$defs/rotulo" },
+        "testado_computador": { "$ref": "#/$defs/rotulo" },
+        "testado_emulador": { "$ref": "#/$defs/rotulo" },
+        "testado_hardware": { "$ref": "#/$defs/rotulo" },
+        "parcial_bloqueado_regressao": { "$ref": "#/$defs/rotulo" }
+      }
+    },
+    "ambiente_padrao": {
+      "type": "object",
+      "required": ["emulador", "modo", "clock_mhz", "janela", "hardware_fisico", "observacao"],
+      "additionalProperties": false,
+      "properties": {
+        "emulador": { "type": "string" },
+        "modo": { "type": "string" },
+        "clock_mhz": { "type": "number" },
+        "janela": { "type": "string" },
+        "hardware_fisico": { "type": "boolean" },
+        "observacao": { "type": "string" }
+      }
+    },
+    "medicoes_definicoes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["chave", "nome", "definicao", "como_medido", "limitacoes"],
+        "additionalProperties": false,
+        "properties": {
+          "chave": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+          "nome": { "type": "string" },
+          "definicao": { "type": "string" },
+          "como_medido": { "type": "string" },
+          "limitacoes": { "type": "string" }
+        }
+      }
+    },
+    "entregas": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/entrega" }
+    },
+    "evidencias_publicadas": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidencia_publicada" }
+    },
+    "nota_publicacao": { "type": "string" }
+  },
+  "$defs": {
+    "rotulo": {
+      "type": "object",
+      "required": ["rotulo", "descricao"],
+      "additionalProperties": false,
+      "properties": {
+        "rotulo": { "type": "string" },
+        "descricao": { "type": "string" }
+      }
+    },
+    "credito": {
+      "type": "object",
+      "required": ["nome", "papel", "versao_ou_referencia", "licenca"],
+      "additionalProperties": false,
+      "properties": {
+        "nome": { "type": "string" },
+        "papel": { "type": "string" },
+        "versao_ou_referencia": { "type": "string" },
+        "licenca": { "type": "string" }
+      }
+    },
+    "entrega": {
+      "type": "object",
+      "required": [
+        "id",
+        "tipo",
+        "titulo",
+        "data",
+        "frente",
+        "fase",
+        "estado",
+        "build",
+        "resumo",
+        "estudo_engenharia",
+        "validacao",
+        "limitacoes",
+        "evidencias",
+        "medicoes",
+        "testes",
+        "problemas",
+        "retratacoes",
+        "proximos_passos",
+        "referencias_historicos"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^OTD-[0-9]{3}$" },
+        "tipo": { "enum": ["entrega", "correcao"] },
+        "entrega_pai": { "type": ["string", "null"], "pattern": "^OTD-[0-9]{3}$" },
+        "titulo": { "type": "string", "minLength": 8 },
+        "data": { "type": "string", "format": "date" },
+        "frente": { "enum": ["motor", "jogo", "motor+jogo"] },
+        "fase": { "type": "string" },
+        "estado": {
+          "enum": [
+            "planejado",
+            "em_implementacao",
+            "implementado",
+            "testado_computador",
+            "testado_emulador",
+            "testado_hardware",
+            "parcial_bloqueado_regressao"
+          ]
+        },
+        "subestado": { "type": "string" },
+        "build": {
+          "type": "object",
+          "required": ["identificador", "commit"],
+          "additionalProperties": false,
+          "properties": {
+            "identificador": { "type": "string" },
+            "commit": { "type": ["string", "null"] },
+            "observacao": { "type": "string" }
+          }
+        },
+        "resumo": { "type": "string", "minLength": 40 },
+        "estudo_engenharia": {
+          "type": "object",
+          "required": ["problema", "investigacao", "decisao", "resultado", "limitacao"],
+          "additionalProperties": false,
+          "properties": {
+            "problema": { "type": "string" },
+            "investigacao": { "type": "string" },
+            "decisao": { "type": "string" },
+            "resultado": { "type": "string" },
+            "limitacao": { "type": "string" }
+          }
+        },
+        "validacao": {
+          "type": "object",
+          "required": ["ambiente", "modo", "emulador", "clock_mhz", "hardware_fisico", "observacao"],
+          "additionalProperties": false,
+          "properties": {
+            "ambiente": { "type": "string" },
+            "modo": { "type": ["string", "null"] },
+            "emulador": { "type": ["string", "null"] },
+            "clock_mhz": { "type": ["number", "null"] },
+            "hardware_fisico": { "type": "boolean" },
+            "observacao": { "type": "string" }
+          }
+        },
+        "limitacoes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "evidencias": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/evidencia_entrega" }
+        },
+        "medicoes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/medicao" }
+        },
+        "testes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["tipo", "ambiente", "resultado"],
+            "additionalProperties": false,
+            "properties": {
+              "tipo": { "type": "string" },
+              "ambiente": { "type": "string" },
+              "resultado": { "type": "string" },
+              "evidencia": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "problemas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "descricao", "estado"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string" },
+              "descricao": { "type": "string" },
+              "estado": { "enum": ["corrigido", "pendente", "regressao_conhecida"] }
+            }
+          }
+        },
+        "retratacoes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "afirmacao_anterior",
+              "onde_foi_publicada",
+              "evidencia_nova",
+              "conclusao_vigente",
+              "registrada_em"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "afirmacao_anterior": { "type": "string" },
+              "onde_foi_publicada": { "type": "string" },
+              "evidencia_nova": { "type": "string" },
+              "conclusao_vigente": { "type": "string" },
+              "registrada_em": { "type": "string" }
+            }
+          }
+        },
+        "proximos_passos": { "type": "array", "items": { "type": "string" } },
+        "dependencias": { "type": "array", "items": { "type": "string" } },
+        "referencias_historicos": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["arquivo", "secao"],
+            "additionalProperties": false,
+            "properties": {
+              "arquivo": { "enum": ["HISTORICO_MOTOR_GRAFICO.md", "HISTORICO_JOGO.md"] },
+              "secao": { "type": "string" },
+              "rotulo_publico": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "evidencia_entrega": {
+      "type": "object",
+      "required": ["referencia", "publicada_no_site", "arquivos_publicados", "observacao"],
+      "additionalProperties": false,
+      "properties": {
+        "referencia": { "type": "string", "pattern": "^evidencias/OTD-[0-9]{3}$" },
+        "publicada_no_site": { "type": "boolean" },
+        "arquivos_publicados": { "type": "array", "items": { "type": "string" } },
+        "observacao": { "type": "string" }
+      }
+    },
+    "medicao": {
+      "type": "object",
+      "required": ["indicador", "valor", "unidade", "condicao", "metodo", "observacao"],
+      "additionalProperties": false,
+      "properties": {
+        "indicador": {
+          "enum": [
+            "fps",
+            "taxa_simulacao_hz",
+            "tempo_quadro_ms",
+            "tempo_render_ms",
+            "tempo_submissao_ms",
+            "grao",
+            "contagem",
+            "percentual",
+            "vazao_mb_s"
+          ]
+        },
+        "valor": { "type": "number" },
+        "unidade": { "type": "string" },
+        "condicao": {
+          "type": "object",
+          "required": ["cena", "camera", "build"],
+          "additionalProperties": false,
+          "properties": {
+            "cena": { "type": "string" },
+            "camera": { "type": "string" },
+            "build": { "type": "string" },
+            "configuracao": { "type": "string" },
+            "angulo": { "type": "string" }
+          }
+        },
+        "metodo": { "type": "string" },
+        "observacao": { "type": "string" }
+      }
+    },
+    "evidencia_publicada": {
+      "type": "object",
+      "required": [
+        "arquivo_site",
+        "entrega",
+        "tag",
+        "descricao",
+        "cena",
+        "camera",
+        "build",
+        "configuracao",
+        "leitura"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "arquivo_site": { "type": "string", "pattern": "^assets/oot-dsi/.+\\.png$" },
+        "entrega": { "type": "string", "pattern": "^OTD-[0-9]{3}$" },
+        "tag": { "type": "string" },
+        "descricao": { "type": "string" },
+        "cena": { "type": "string" },
+        "camera": { "type": "string" },
+        "build": { "type": "string" },
+        "configuracao": { "type": "string" },
+        "leitura": { "type": "string" }
+      }
+    }
+  }
+}

@@ -17,10 +17,17 @@ Makefile             build ARM9 e empacotamento do .nds
 tools/               utilitários de análise e geração
 ferramentas/         medição, comparação de capturas e validação de dados
 dados/               progresso estruturado e esquema JSON versionado
+docs/                site público publicado pelo GitHub Pages
 docs/publico/        síntese pública por entrega
 evidencias/publicas/ seis capturas publicadas na apresentação
 HISTORICO_*.md       históricos técnicos completos do motor e do jogo
 ```
+
+A apresentação pública fica em [`docs/`](docs/), publicada em
+<https://agonisingbasher.github.io/ocarina-of-time-dsi/>, e o portfólio
+[agonisingbasher.github.io/personal-website](https://agonisingbasher.github.io/personal-website/index.html#projetos)
+mantém apenas o card que aponta para ela. Os espelhos que precisam continuar sincronizados estão
+listados em [`docs/README.md`](docs/README.md).
 
 ## Dependências
 

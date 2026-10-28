@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d1a13">
+  <meta name="description" content="Apresentação técnica do projeto experimental de adaptação de Ocarina of Time para Nintendo DSi, com estado, medições e limites." data-i18n-content="ootMetaDescription">
+  <title>Ocarina of Time para Nintendo DSi — AgonisingBasher</title>
+  <link rel="stylesheet" href="oot.css">
+  <script src="oot.js" defer></script>
+</head>
+<body class="oot-page">
+  <header class="site-header oot-header">
+    <div class="container header-inner">
+      <a class="brand" href="https://agonisingbasher.github.io/personal-website/index.html#inicio" aria-label="AgonisingBasher, início" target="_blank" rel="noreferrer">
+        <span class="brand-mark" aria-hidden="true">A<span>.</span></span>
+        <span>AGONISING<span class="brand-light">BASHER</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Navegação principal" data-i18n-aria-label="navLabel">
+        <a href="https://agonisingbasher.github.io/personal-website/index.html#projetos" data-i18n="navProjects" target="_blank" rel="noreferrer">Projetos</a>
+        <a href="https://agonisingbasher.github.io/personal-website/index.html#sobre" data-i18n="navAbout" target="_blank" rel="noreferrer">Sobre mim</a>
+        <a class="nav-contact" href="https://agonisingbasher.github.io/personal-website/index.html#conectar" target="_blank" rel="noreferrer"><span data-i18n="navConnect">Conectar</span> <span aria-hidden="true">↗</span></a>
+        <button class="language-toggle" type="button" data-lang-toggle aria-label="Mudar idioma para inglês" title="Mudar idioma para inglês">EN</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="oot-hero" id="inicio">
+      <div class="oot-hero-grid" aria-hidden="true"></div>
+      <div class="container oot-hero-inner">
+        <div class="oot-hero-copy">
+          <a class="oot-breadcrumb" href="https://agonisingbasher.github.io/personal-website/index.html#projetos" target="_blank" rel="noreferrer"><span aria-hidden="true">←</span><span data-i18n="ootBreadcrumb">Voltar aos projetos</span></a>
+          <p class="eyebrow oot-eyebrow" data-i18n="ootEyebrow">PESQUISA E DESENVOLVIMENTO · ADAPTAÇÃO EXPERIMENTAL</p>
+          <h1 data-i18n="ootHeroTitle">Ocarina of Time<span class="oot-period">.</span><small>para Nintendo DSi</small></h1>
+          <p class="oot-hero-description" data-i18n="ootHeroDescription">Uma investigação técnica para adaptar Ocarina of Time ao Nintendo DSi, com tradução gráfica, gerenciamento de recursos e integração gradual dos sistemas do jogo.</p>
+          <div class="oot-hero-actions">
+            <a class="button button-primary" href="#estado"><span data-i18n="ootHeroState">Ver estado atual</span> <span aria-hidden="true">↓</span></a>
+            <a class="text-link" href="#motor"><span data-i18n="ootHeroFronts">Conhecer as duas frentes</span> <span aria-hidden="true">↓</span></a>
+          </div>
+          <p class="oot-hero-note"><span aria-hidden="true">●</span> <span data-i18n="ootHeroNote">PROJETO EXPERIMENTAL · EM DESENVOLVIMENTO · SEM ROM, DOWNLOAD OU LANÇAMENTO</span></p>
+        </div>
+
+        <div class="oot-hero-art" aria-hidden="true">
+          <div class="oot-art-orbit"></div>
+          <div class="oot-art-orbit oot-art-orbit-two"></div>
+          <div class="oot-art-compass">✧</div>
+          <div class="oot-composition">
+            <div class="oot-comp-screen oot-comp-top">
+              <span class="oot-comp-label">TOP · 3D</span>
+              <span class="oot-comp-code">F3DEX2 → GE</span>
+              <div class="oot-comp-wire"></div>
+              <span class="oot-comp-room">Bmori1_room_0 · 646 TRI</span>
+            </div>
+            <div class="oot-comp-screen oot-comp-bottom">
+              <span class="oot-comp-label">BOTTOM · TELEMETRIA</span>
+              <span class="oot-comp-code">ARM9 · PONTO FIXO · 20 Hz</span>
+              <div class="oot-comp-bars"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <span class="oot-comp-room">s 48,8 · f 50,1 · FPS 19</span>
+            </div>
+          </div>
+          <span class="oot-art-coordinate">OTD-001 → OTD-030</span>
+        </div>
+      </div>
+      <div class="container oot-hero-footer">
+        <span data-i18n="ootHeroDiagram">COMPOSIÇÃO TIPOGRÁFICA · NÃO É GAMEPLAY FABRICADA</span>
+        <a href="#apresentacao"><span data-i18n="ootHeroScroll">ENTENDER O PROJETO</span> <span aria-hidden="true">↓</span></a>
+      </div>
+    </section>
+
+    <section class="section-pad oot-intro" id="apresentacao">
+      <div class="container">
+        <div class="oot-section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="ootIntroEyebrow">01 / APRESENTAÇÃO</p>
+            <h2 data-i18n="ootIntroTitle">Uma investigação, não um port pronto<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="ootIntroLead">O projeto traduz o pipeline gráfico do N64 para o DS e integra, aos poucos, os sistemas do jogo. O que existe hoje é uma base técnica medida — não o jogo inteiro.</p>
+        </div>
+
+        <div class="oot-intro-grid">
+          <div class="oot-intro-copy">
+            <p data-i18n="ootIntroP1">Este é um projeto experimental de adaptação nativa de <em>The Legend of Zelda: Ocarina of Time</em> para o Nintendo DSi. O ponto de partida é a decompilação em C do jogo; o port interpreta as display lists F3DEX2 e as traduz para o geometry engine do DS.</p>
+            <p data-i18n="ootIntroP2">Não é um emulador, não é um ROM distribuível e não é um jogo completo. O que existe hoje é uma base técnica: uma sala real renderizada no emulador, com o motor gráfico e a integração do jogo crescendo em frentes separadas.</p>
+            <p data-i18n="ootIntroP3">Tudo o que aparece nesta página foi registrado com identificadores <strong>OTD-NNN</strong>. Resultados de emulador são apresentados como resultados de emulador; nenhuma entrega foi validada em DSi físico.</p>
+            <div class="oot-fact-grid" aria-label="Fatos do projeto" data-i18n-aria-label="ootFactsLabel">
+              <div class="oot-fact">
+                <span class="oot-fact-value">30</span>
+                <span class="oot-fact-label" data-i18n="ootFactOneLabel">ENTREGAS REGISTRADAS</span>
+                <span class="oot-fact-note" data-i18n="ootFactOneNote">OTD-001 a OTD-030</span>
+              </div>
+              <div class="oot-fact">
+                <span class="oot-fact-value">0</span>
+                <span class="oot-fact-label" data-i18n="ootFactTwoLabel">VALIDAÇÃO FÍSICA</span>
+                <span class="oot-fact-note" data-i18n="ootFactTwoNote">todas em emulador</span>
+              </div>
+              <div class="oot-fact">
+                <span class="oot-fact-value">646</span>
+                <span class="oot-fact-label" data-i18n="ootFactThreeLabel">TRIÂNGULOS NA SALA ATUAL</span>
+                <span class="oot-fact-note">Bmori1_room_0</span>
+              </div>
+              <div class="oot-fact">
+                <span class="oot-fact-value">—</span>
+                <span class="oot-fact-label" data-i18n="ootFactFourLabel">CONCLUSÃO GLOBAL</span>
+                <span class="oot-fact-note" data-i18n="ootFactFourNote">sem percentual verificável</span>
+              </div>
+            </div>
+          </div>
+
+          <figure class="oot-capture">
+            <a href="assets/otd-030-f12a1.png" aria-label="Abrir a captura completa em tamanho real" data-i18n-aria-label="ootCaptureOpen">
+              <img src="assets/otd-030-f12a1.png" width="272" height="448" alt="Captura da janela do melonDS com a sala Bmori1_room_0 na tela de cima e a telemetria na tela de baixo" data-i18n-alt="ootCaptureAlt" loading="lazy">
+            </a>
+            <figcaption>
+              <span class="oot-capture-tag" data-i18n="ootCaptureTag">CAPTURA REAL · OTD-030</span>
+              <span data-i18n="ootCaptureCaption">Bmori1_room_0, câmera presa em ROOM_ANGLE 0, melonDS 1.1 em modo DS a 67 MHz. A tela inferior mostra a telemetria. Captura de emulador, não de DSi físico.</span>
+            </figcaption>
+          </figure>
+        </div>
+
+        <figure class="oot-concept">
+          <img src="assets/oot-conceito-aventura.webp" width="1672" height="941" loading="lazy" decoding="async" alt="Arte digital de um jovem de túnica verde e chapéu, visto de costas com um escudo nas costas, em pé entre ruínas de pedra cobertas de trepadeiras; à frente, uma espada cravada num pedestal com o símbolo da Triforce, e ao fundo um vale verde, um castelo e montanhas sob o sol baixo" data-i18n-alt="ootConceptOneAlt">
+          <figcaption>
+            <span class="oot-concept-tag" data-i18n="ootConceptTag">ARTE CONCEITUAL · NÃO É EVIDÊNCIA</span>
+            <span data-i18n="ootConceptOneCaption">Arte conceitual gerada por IA — não representa captura do port. É a atmosfera que orienta o projeto; o estado real continua sendo o das capturas e medidas desta página.</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section-pad oot-challenge" id="desafio">
+      <div class="container">
+        <div class="oot-section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="ootChallengeEyebrow">02 / O DESAFIO</p>
+            <h2 data-i18n="ootChallengeTitle">Traduzir o N64 para o DS sem fingir que são a mesma máquina<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="ootChallengeLead">O jogo espera um RSP e um RDP. O DS oferece um geometry engine, duas telas e um ARM9 sem FPU. O port precisa reconstruir o caminho entre esses dois mundos.</p>
+        </div>
+
+        <div class="oot-challenge-grid">
+          <article class="oot-challenge-card">
+            <span class="oot-card-number">01</span>
+            <h3 data-i18n="ootChallengeOneTitle">Traduzir, não emular</h3>
+            <p data-i18n="ootChallengeOneText">Cada display list F3DEX2 é decodificada e reemitida no formato do DS: matrizes, vértices, texturas, combiner, viewport e recorte. Nada de um N64 inteiro rodando por software.</p>
+          </article>
+          <article class="oot-challenge-card">
+            <span class="oot-card-number">02</span>
+            <h3 data-i18n="ootChallengeTwoTitle">Fazer matemática sem FPU</h3>
+            <p data-i18n="ootChallengeTwoText">O ARM9 do DSi não tem unidade de ponto flutuante. Câmera, projeção, matrizes e seleção de textura são feitas em ponto fixo, com multiplicações de 64 bits onde a precisão exige.</p>
+          </article>
+          <article class="oot-challenge-card">
+            <span class="oot-card-number">03</span>
+            <h3 data-i18n="ootChallengeThreeTitle">Caber em duas telas e pouca memória</h3>
+            <p data-i18n="ootChallengeThreeText">O 3D ocupa a tela de cima; a interface 2D e a telemetria ficam na de baixo. A lógica roda a 20 Hz, o desenho tem orçamento próprio e os assets são lidos por streaming.</p>
+          </article>
+        </div>
+
+        <figure class="oot-concept oot-concept-dark">
+          <img src="assets/oot-conceito-duas-telas.webp" width="1672" height="941" loading="lazy" decoding="async" alt="Arte digital de um console portátil de duas telas apoiado num bloco de pedra com musgo: a tela de cima mostra um triângulo dourado sobre nuvens verdes e a tela de baixo mostra símbolos luminosos dispostos em círculo, com uma ocarina azul, um escudo e uma caneta stylus ao lado, diante de ruínas e de um castelo ao longe" data-i18n-alt="ootConceptThreeAlt">
+          <figcaption>
+            <span class="oot-concept-tag" data-i18n="ootConceptTag">ARTE CONCEITUAL · NÃO É EVIDÊNCIA</span>
+            <span data-i18n="ootConceptThreeCaption">Arte conceitual gerada por IA — não representa captura do port. As telas desenhadas não são uma interface implementada: o layout de duas telas do projeto reserva o 3D para a de cima e a telemetria para a de baixo.</span>
+          </figcaption>
+        </figure>
+
+        <p class="oot-caveat"><strong data-i18n="ootChallengeCaveatStrong">Uma sala renderizada não é o jogo.</strong> <span data-i18n="ootChallengeCaveatText">Ela prova que o caminho de uma display list real até o painel existe; não prova atores, colisão, câmera de jogo, áudio, progressão ou hardware físico.</span></p>
+      </div>
+    </section>
+
+    <section class="section-pad oot-state" id="estado">
+      <div class="container">
+        <div class="oot-section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="ootStateEyebrow">03 / ESTADO ATUAL</p>
+            <h2 data-i18n="ootStateTitle">O que está de pé, onde foi testado e o que falta<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="ootStateLead">Cada entrega tem um estado só. “Testado em emulador” não significa hardware físico; “implementado” não significa testado.</p>
+        </div>
+
+        <div class="oot-state-grid">
+          <article class="oot-state-column oot-state-done">
+            <div class="oot-state-heading">
+              <span class="oot-state-dot" aria-hidden="true"></span>
+              <h3 data-i18n="ootStateDoneTitle">Implementado e testado em emulador</h3>
+            </div>
+            <ul>
+              <li data-i18n="ootStateDoneOne">Sonda do ambiente DSi, clock, heap, RAM e duas telas.</li>
+              <li data-i18n="ootStateDoneTwo">Loop com tempo de hardware, lógica a 20 Hz, arena de memória e telemetria.</li>
+              <li data-i18n="ootStateDoneThree">Entrada do DS no contrato BTN_* e leitura de assets por streaming no cartão SD.</li>
+              <li data-i18n="ootStateDoneFour">Decodificador F3DEX2, matrizes, projeção, pilha por tipo e viewport.</li>
+              <li data-i18n="ootStateDoneFive">Texturas CI4, CI8 e RGBA16, cache LRU, combiner do ciclo 0, alpha e blending.</li>
+              <li data-i18n="ootStateDoneSix">Recorte no plano perto e sala real do jogo: market_day_room_0 e Bmori1_room_0.</li>
+              <li data-i18n="ootStateDoneSeven">Cadeia de mip por triângulo, cor de vértice no combiner e lerp de duas texturas em segunda passada.</li>
+            </ul>
+          </article>
+
+          <article class="oot-state-column oot-state-partial">
+            <div class="oot-state-heading">
+              <span class="oot-state-dot" aria-hidden="true"></span>
+              <h3 data-i18n="ootStatePartialTitle">Parcial ou em aberto</h3>
+            </div>
+            <ul>
+              <li data-i18n="ootStatePartialOne">Ciclo 1 do combiner, fontes ENV/PRIMITIVE, G_TT_IA16, texturas retangulares, wrap/mask/shift e recorte em x = ±w e y = ±w.</li>
+              <li data-i18n="ootStatePartialTwo">20 808 triângulos (14,9 %) pedem iluminação do RSP e continuam fora do caminho.</li>
+              <li data-i18n="ootStatePartialThree">4 063 triângulos (19,3 %) têm segunda imagem CI/IA/I, fora do caminho RGBA16 do lerp.</li>
+              <li data-i18n="ootStatePartialFour">A cadeia de mip ainda custa +16,4 ms (34 % do render) e é um compromisso em avaliação.</li>
+              <li data-i18n="ootStatePartialFive">O limite de 750 px por canto e o custo de 0,5 ms da cor de vértice seguem sem explicação fechada.</li>
+            </ul>
+          </article>
+
+          <article class="oot-state-column oot-state-missing">
+            <div class="oot-state-heading">
+              <span class="oot-state-dot" aria-hidden="true"></span>
+              <h3 data-i18n="ootStateMissingTitle">Fora do escopo entregue</h3>
+            </div>
+            <ul>
+              <li data-i18n="ootStateMissingOne">Atores e objetos de cena em tempo de execução.</li>
+              <li data-i18n="ootStateMissingTwo">Colisão e física do jogador.</li>
+              <li data-i18n="ootStateMissingThree">Câmera de jogo — a câmera presa é instrumento de medida.</li>
+              <li data-i18n="ootStateMissingFour">Animação, esqueleto e áudio.</li>
+              <li data-i18n="ootStateMissingFive">Progressão, portas, transições de sala e salvamento.</li>
+              <li data-i18n="ootStateMissingSix">Segunda sala, HUD e inventário 2D na tela de baixo.</li>
+              <li data-i18n="ootStateMissingSeven">Execução em DSi físico.</li>
+            </ul>
+          </article>
+        </div>
+
+        <p class="oot-state-note" data-i18n="ootStateNote">Todos os testes registrados estão no melonDS 1.1 em modo DS a 67 MHz, exceto OTD-003, testado no computador. Nenhuma entrega está no estado “testado em hardware físico”.</p>
+      </div>
+    </section>
+
+    <section class="section-pad oot-fronts" id="motor">
+      <div class="container">
+        <div class="oot-section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="ootFrontsEyebrow">04 / DUAS FRENTES</p>
+            <h2 data-i18n="ootFrontsTitle">O motor gráfico e o jogo se encontram na display list<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="ootFrontsLead">As frentes são independentes na maior parte do tempo e se juntam quando uma lista real do jogo chega ao tradutor.</p>
+        </div>
+
+        <div class="oot-fronts-grid">
+          <article class="oot-front-card">
+            <span class="oot-front-tag">source/gfx/</span>
+            <h3 data-i18n="ootGfxTitle">Motor gráfico</h3>
+            <p data-i18n="ootGfxText">Interpreta o que o jogo emite e reemite no formato do geometry engine do DS.</p>
+            <ul>
+              <li data-i18n="ootGfxOne">Decodificador F3DEX2 e pilha de matrizes por tipo.</li>
+              <li data-i18n="ootGfxTwo">Projeção, viewport de dois cantos e recorte no plano perto.</li>
+              <li data-i18n="ootGfxThree">Texturas CI4, CI8 e RGBA16, paleta por slot de TMEM e cache LRU.</li>
+              <li data-i18n="ootGfxFour">Combiner do ciclo 0, alpha do texel e blending translúcido.</li>
+              <li data-i18n="ootGfxFive">Seleção de mip por triângulo, cor de vértice e segunda passada para duas texturas.</li>
+            </ul>
+          </article>
+
+          <article class="oot-front-card">
+            <span class="oot-front-tag">source/nds/ · source/ui/ · source/main.c · game/oot/</span>
+            <h3 data-i18n="ootGameTitle">Integração com o jogo</h3>
+            <p data-i18n="ootGameText">Faz o código do jogo rodar sobre a plataforma do DS, com tempo, memória, entrada e recursos próprios.</p>
+            <ul>
+              <li data-i18n="ootGameOne">Base de tempo em timer de hardware, escalonador de 20 Hz e telemetria.</li>
+              <li data-i18n="ootGameTwo">Arena linear de memória, alinhamento e orçamento para libnds/libfat.</li>
+              <li data-i18n="ootGameThree">Entrada do DS convertida para BTN_* e leitura de arquivos por streaming.</li>
+              <li data-i18n="ootGameFour">Camada Ultra64 e trechos do decomp compilando para ARM9.</li>
+              <li data-i18n="ootGameFive">Carregamento de sala, câmera presa de medida e HUD de telemetria.</li>
+            </ul>
+          </article>
+        </div>
+
+        <figure class="oot-concept">
+          <img src="assets/oot-conceito-motor-grafico.webp" width="1672" height="941" loading="lazy" decoding="async" alt="Arte digital de triângulos dourados brilhantes, alguns em arame e alguns espelhando vegetação, que se desprendem de uma estrutura em wireframe à esquerda e são atraídos para um console portátil aberto à direita, enquanto uma fada azul atravessa o ar; ao fundo, ruínas verdes com cachoeiras" data-i18n-alt="ootConceptTwoAlt">
+          <figcaption>
+            <span class="oot-concept-tag" data-i18n="ootConceptTag">ARTE CONCEITUAL · NÃO É EVIDÊNCIA</span>
+            <span data-i18n="ootConceptTwoCaption">Arte conceitual gerada por IA — não representa captura do port. É uma metáfora visual da tradução de triângulos entre dois pipelines, não um diagrama técnico nem a saída de um renderizador; o mecanismo real está descrito nas listas acima e nos estudos de engenharia.</span>
+          </figcaption>
+        </figure>
+
+        <div class="oot-origins">
+          <h3 data-i18n="ootOriginsTitle">O que é integrado, adaptado e de terceiros</h3>
+          <p class="oot-table-hint" data-i18n="ootTableHint">Deslize a tabela para o lado para ver todas as colunas.</p>
+          <div class="oot-table-wrap" role="region" tabindex="0" aria-label="Tabela com rolagem horizontal" data-i18n-aria-label="ootTableScroll">
+            <table class="oot-table">
+              <caption data-i18n="ootOriginsCaption">Origem de cada parte do projeto, conforme os créditos do repositório.</caption>
+              <thead>
+                <tr>
+                  <th scope="col" data-i18n="ootCreditsTableComponent">Componente</th>
+                  <th scope="col" data-i18n="ootCreditsTableRole">Papel</th>
+                  <th scope="col" data-i18n="ootCreditsTableSource">Origem</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>game/oot</code></td>
+                  <td data-i18n="ootOriginDecompRole">Lógica do jogo, tipos, macros F3DEX2 e tabelas.</td>
+                  <td data-i18n="ootOriginDecompSource">Decompilação zeldaret/oot integrada, commit 14759abf… (2026-10-18). Não é código próprio do port.</td>
+                </tr>
+                <tr>
+                  <td><code>source/gfx</code></td>
+                  <td data-i18n="ootOriginGfxRole">Decodificador, tradução para o GE, texturas, cache, combiner, viewport, recorte e mip.</td>
+                  <td data-i18n="ootOriginOwn">Código próprio do port.</td>
+                </tr>
+                <tr>
+                  <td><code>source/nds</code>, <code>source/ui</code>, <code>source/main.c</code></td>
+                  <td data-i18n="ootOriginPlatformRole">Plataforma, tempo, escalonador, memória, entrada, assets, telemetria e interface.</td>
+                  <td data-i18n="ootOriginOwn">Código próprio do port.</td>
+                </tr>
+                <tr>
+                  <td><code>ferramentas/</code></td>
+                  <td data-i18n="ootOriginToolsRole">Validação dos dados, geração da documentação, medidor de grão e recorte de captura.</td>
+                  <td data-i18n="ootOriginOwn">Código próprio do port.</td>
+                </tr>
+                <tr>
+                  <td>devkitARM, libnds, libfat, maxmod, Calico, ndstool</td>
+                  <td data-i18n="ootOriginLibsRole">Toolchain, bibliotecas de plataforma e empacotamento do .nds.</td>
+                  <td data-i18n="ootOriginLibsSource">Terceiros, via devkitPro; versões nos créditos.</td>
+                </tr>
+                <tr>
+                  <td>melonDS 1.1</td>
+                  <td data-i18n="ootOriginEmuRole">Emulador usado em todas as validações registradas.</td>
+                  <td data-i18n="ootOriginEmuSource">Terceiro; não é distribuído com o projeto.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="oot-small-note" data-i18n="ootOriginsNote">O projeto integra a decompilação; não a reescreve. As adaptações próprias estão nas camadas de plataforma e no motor gráfico. Onde uma conclusão muda, o histórico registra a correção em vez de apagar a conclusão anterior.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-pad oot-studies" id="estudos">
+      <div class="container">
+        <div class="oot-section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="ootStudiesEyebrow">05 / ESTUDOS DE ENGENHARIA</p>
+            <h2 data-i18n="ootStudiesTitle">Problema, investigação, decisão, resultado e limite<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="ootStudiesLead">Cada estudo existe porque uma conclusão anterior foi medida — e, em alguns casos, refutada. O histórico preserva a correção em vez de apagar o erro.</p>
+        </div>
+
+        <div class="oot-studies-list">
+          <details class="oot-study" open>
+            <summary>
+              <span class="oot-study-id">OTD-026 · OTD-030</span>
+              <span data-i18n="ootStudyOneTitle">O custo do mip era aritmética, não troca de textura</span>
+            </summary>
+            <dl class="oot-study-grid">
+              <dt data-i18n="ootLabelProblem">Problema</dt>
+              <dd data-i18n="ootStudyOneProblem">A fase 8 tinha juntado no mesmo número a aritmética do seletor de mip, a escolha do nível e a troca de textura. Nenhum build tinha preçado uma troca isolada.</dd>
+              <dt data-i18n="ootLabelInvestigation">Investigação</dt>
+              <dd data-i18n="ootStudyOneInvestigation">Quatro builds na mesma linhagem: cadeia desligada, cadeia entregue, seletor calculado e descartado, e uma troca forçada por triângulo com o mesmo id. Duas capturas por build, md5 do painel e leitura dos contadores.</dd>
+              <dt data-i18n="ootLabelDecision">Decisão</dt>
+              <dd data-i18n="ootStudyOneDecision">Manter a cadeia ligada como compromisso em avaliação, com o build sem cadeia declarado como alternativa. O preço da troca foi isolado em 0,45 µs.</dd>
+              <dt data-i18n="ootLabelResult">Resultado</dt>
+              <dd data-i18n="ootStudyOneResult">A aritmética custa 15,7 ms dos 16,4 ms da cadeia (96 %). As 662 trocas forçadas custaram 0,3 ms e mudaram 0 pixels. Agrupar primitivos por nível não paga.</dd>
+              <dt data-i18n="ootLabelLimit">Limite</dt>
+              <dd data-i18n="ootStudyOneLimit">Uma sala e um ângulo, em emulador. O preço da troca inclui o corte do lote; o custo por nível inclui a varredura do cache. O rasterizador não entra em s. A cadeia continua em avaliação: −31 % de grão por +16,4 ms.</dd>
+              <dt data-i18n="ootLabelEvidence">Evidência</dt>
+              <dd data-i18n="ootStudyOneEvidence">Capturas f12a1/f12a3, f12f1 e f12e1; contadores r e s nas linhas 8 e 22 do HUD. Dados em OTD-030.</dd>
+            </dl>
+          </details>
+
+          <details class="oot-study">
+            <summary>
+              <span class="oot-study-id">OTD-028</span>
+              <span data-i18n="ootStudyTwoTitle">A sala branca era o port, não o jogo</span>
+            </summary>
+            <dl class="oot-study-grid">
+              <dt data-i18n="ootLabelProblem">Problema</dt>
+              <dd data-i18n="ootStudyTwoProblem">A sala parecia sem cor. O comentário do tradutor justificava o branco com uma medição falsa: dizia que 605 de 979 vértices tinham azul acima do vermelho e que a cor de vértice não era cor.</dd>
+              <dt data-i18n="ootLabelInvestigation">Investigação</dt>
+              <dd data-i18n="ootStudyTwoInvestigation">Censo dos 979 vértices da sala e das 359 salas extraídas, além de um A/B com um único interruptor: GE_VTX_SHADE 0 contra 1 na mesma linhagem.</dd>
+              <dt data-i18n="ootLabelDecision">Decisão</dt>
+              <dd data-i18n="ootStudyTwoDecision">Usar a cor de vértice no MODULATE quando não há iluminação, como a própria lista da sala pede.</dd>
+              <dt data-i18n="ootLabelResult">Resultado</dt>
+              <dd data-i18n="ootStudyTwoResult">Zero de 979 vértices com azul acima do vermelho; média (96, 81, 59). A luminância do painel caiu 71 % (47,5 % → 13,6 %) e a pedra ganhou gradiente, por +0,5 ms e sem mudar o FPS.</dd>
+              <dt data-i18n="ootLabelLimit">Limite</dt>
+              <dd data-i18n="ootStudyTwoLimit">A conferência é contra o que a lista pede, não contra uma referência do N64. Só uma sala foi vista no emulador; as outras 358 foram lidas offline. 14,9 % dos triângulos ainda precisam de iluminação do RSP.</dd>
+              <dt data-i18n="ootLabelEvidence">Evidência</dt>
+              <dd data-i18n="ootStudyTwoEvidence">Capturas f10c/f10e; contadores s611 l0 o35 e censo offline de 611 MODULATE / 35 OTHER. Dados em OTD-028.</dd>
+            </dl>
+          </details>
+
+          <details class="oot-study">
+            <summary>
+              <span class="oot-study-id">OTD-029 · OTD-030</span>
+              <span data-i18n="ootStudyThreeTitle">Duas texturas em segunda passada</span>
+            </summary>
+            <dl class="oot-study-grid">
+              <dt data-i18n="ootLabelProblem">Problema</dt>
+              <dd data-i18n="ootStudyThreeProblem">O combiner que mistura duas texturas pela transparência era a maior lacuna do tradutor. O DS não consegue ler a tela como fonte.</dd>
+              <dt data-i18n="ootLabelInvestigation">Investigação</dt>
+              <dd data-i18n="ootStudyThreeInvestigation">Desenhar a superfície uma segunda vez com a segunda imagem e o peso do efeito, usando POLY_ALPHA. Censo das 359 salas para medir alpha zero, segmento da segunda imagem e formato.</dd>
+              <dt data-i18n="ootLabelDecision">Decisão</dt>
+              <dd data-i18n="ootStudyThreeDecision">Aproximar o efeito com uma segunda passada sobre o que já está desenhado, sem leitura de framebuffer. Fazer o bake opaco quando a segunda imagem tem alpha zero em todos os texéis.</dd>
+              <dt data-i18n="ootLabelResult">Resultado</dt>
+              <dd data-i18n="ootStudyThreeResult">Na Bmori1_room_0, 560 pixels mudam com +1,3 ms. São 35 segundas passadas e 247 rebinds. A família tem 21 041 triângulos; 11,4 % dependiam do bake opaco.</dd>
+              <dt data-i18n="ootLabelLimit">Limite</dt>
+              <dd data-i18n="ootStudyThreeLimit">É aproximação de alpha: ENVA/255 no RDP contra POLY_ALPHA/31 no GE, erro de meio nível (~1,6 %). 19,3 % dos triângulos têm segunda imagem CI/IA/I, fora do caminho RGBA16. Uma sala e um ângulo.</dd>
+              <dt data-i18n="ootLabelEvidence">Evidência</dt>
+              <dd data-i18n="ootStudyThreeEvidence">Capturas f11j/f11n e diff de 560 px; contadores xluTris e r. Dados em OTD-029, com a correção do segmento 2 registrada em OTD-030.</dd>
+            </dl>
+          </details>
+
+          <details class="oot-study">
+            <summary>
+              <span class="oot-study-id">OTD-027</span>
+              <span data-i18n="ootStudyFourTitle">O ganho estava no tamanho do inteiro</span>
+            </summary>
+            <dl class="oot-study-grid">
+              <dt data-i18n="ootLabelProblem">Problema</dt>
+              <dd data-i18n="ootStudyFourProblem">A fase anterior apontou a formulação por área em espaço de olho como o próximo corte de custo da cadeia de mip.</dd>
+              <dt data-i18n="ootLabelInvestigation">Investigação</dt>
+              <dd data-i18n="ootStudyFourInvestigation">Construir a versão exata, a versão com profundidade média e a versão com cantos projetados limitados a 750 px; comparar tempo de render, níveis escolhidos e md5 do painel.</dd>
+              <dt data-i18n="ootLabelDecision">Decisão</dt>
+              <dd data-i18n="ootStudyFourDecision">Aceitar o limite de 750 px por canto, que mantém as quatro multiplicações da área em 32 bits, e descartar a formulação exata em espaço de olho.</dd>
+              <dt data-i18n="ootLabelResult">Resultado</dt>
+              <dd data-i18n="ootStudyFourResult">A versão exata custou 48,9 ms contra 47,7 ms do seletor antigo; a profundidade média empatou. Com o limite, o render caiu para 46,5 ms sem mudar um pixel. Zero de 646 faces divergiu entre os seletores.</dd>
+              <dt data-i18n="ootLabelLimit">Limite</dt>
+              <dd data-i18n="ootStudyFourLimit">O ganho é 1,2 ms, 7 % dos 17,5 ms da cadeia; o FPS não muda. O limite de 750 px foi verificado em uma sala e três vistas. O custo restante está nas multiplicações de 64 bits da projeção por canto.</dd>
+              <dt data-i18n="ootLabelEvidence">Evidência</dt>
+              <dd data-i18n="ootStudyFourEvidence">Builds f9a/f9b/f9c2/f9e; contador lodEyeDiv/lodEyeMax e lodClamp; md5 do painel por ângulo. Dados em OTD-027.</dd>
+            </dl>
+          </details>
+
+          <details class="oot-study">
+            <summary>
+              <span class="oot-study-id">OTD-023 · OTD-024 · OTD-025</span>
+              <span data-i18n="ootStudyFiveTitle">O confete era minificação</span>
+            </summary>
+            <dl class="oot-study-grid">
+              <dt data-i18n="ootLabelProblem">Problema</dt>
+              <dd data-i18n="ootStudyFiveProblem">A primeira sala texturizada apareceu coberta de pontilhado colorido. A hipótese herdada era paleta CI errada.</dd>
+              <dt data-i18n="ootLabelInvestigation">Investigação</dt>
+              <dd data-i18n="ootStudyFiveInvestigation">Comparar a paleta com os dados da lista e medir a escala das faces. Um erro de 4096 vezes na posição projetada fazia 467 de 646 faces caírem por uma guarda.</dd>
+              <dt data-i18n="ootLabelDecision">Decisão</dt>
+              <dd data-i18n="ootStudyFiveDecision">Manter a paleta e atacar a minificação com uma cadeia de mip escolhida por triângulo, depois de corrigir a régua de câmera e a escala da sonda.</dd>
+              <dt data-i18n="ootLabelResult">Resultado</dt>
+              <dd data-i18n="ootStudyFiveResult">A paleta estava certa; o GE amostra um texel por pixel, sem filtro. Corrigida a sonda, o histograma virou Lo 2/25/256/363. A cadeia cortou o grão em 32 %, ao custo de +17,5 ms.</dd>
+              <dt data-i18n="ootLabelLimit">Limite</dt>
+              <dd data-i18n="ootStudyFiveLimit">O ganho e o custo foram medidos em uma sala e um ângulo. A cadeia de mip continua como compromisso em avaliação; a varredura de ROOM_ANGLE segue pendente.</dd>
+              <dt data-i18n="ootLabelEvidence">Evidência</dt>
+              <dd data-i18n="ootStudyFiveEvidence">Capturas bm33 (antes), mf0 (fase 7) e f10e (depois da cor); histograma de níveis e md5 do painel. Dados em OTD-023, OTD-024 e OTD-025.</dd>
+            </dl>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-pad oot-gallery" id="galeria">
+      <div class="container">
+        <div class="oot-section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="ootGalleryEyebrow">06 / GALERIA</p>
+            <h2 data-i18n="ootGalleryTitle">Capturas reais, com condição declarada<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="ootGalleryLead">As imagens são capturas do melonDS 1.1 em modo DS, feitas como evidência. Não são renders ilustrativos nem gameplay fabricado. Estados superados aparecem identificados.</p>
+        </div>
+
+        <div class="oot-gallery-grid">
+          <figure class="oot-gallery-item oot-gallery-wide">
+            <a href="assets/otd-030-f12a1.png">
+              <img src="assets/otd-030-f12a1.png" width="272" height="448" alt="Janela completa do melonDS com a sala de pedra na tela superior e a telemetria na inferior" data-i18n-alt="ootGalleryOneAlt" loading="lazy">
+            </a>
+            <figcaption>
+              <span class="oot-gallery-tag">OTD-030 · f12a1</span>
+              <span data-i18n="ootGalleryOneCaption">Janela completa do build entregue: Bmori1_room_0, ROOM_ANGLE 0, melonDS 1.1 em modo DS a 67 MHz, 646 triângulos. A tela inferior mostra FPS, tempos e contadores.</span>
+            </figcaption>
+          </figure>
+
+          <figure class="oot-gallery-item">
+            <a href="assets/otd-030-f12a1-top.png">
+              <img src="assets/otd-030-f12a1-top.png" width="512" height="384" alt="Painel 3D com uma parede de pedra escura e um vão iluminado ao centro" data-i18n-alt="ootGalleryTwoAlt" loading="lazy">
+            </a>
+            <figcaption>
+              <span class="oot-gallery-tag">OTD-030 · f12a1_top</span>
+              <span data-i18n="ootGalleryTwoCaption">Recorte do painel 3D do mesmo build, sem a telemetria. Cadeia de mip no teto 2, lerp de duas texturas e cor de vértice ligados.</span>
+            </figcaption>
+          </figure>
+
+          <figure class="oot-gallery-item">
+            <a href="assets/otd-028-f10e-top.png">
+              <img src="assets/otd-028-f10e-top.png" width="512" height="384" alt="Painel 3D com a parede de pedra em tons escuros e quentes depois da cor de vértice" data-i18n-alt="ootGalleryThreeAlt" loading="lazy">
+            </a>
+            <figcaption>
+              <span class="oot-gallery-tag">OTD-028 · f10e_top</span>
+              <span data-i18n="ootGalleryThreeCaption">Depois da cor de vértice: luminância média de 13,6 % contra 47,5 % do painel branco, por +0,5 ms. Mesma sala e mesmo ângulo.</span>
+            </figcaption>
+          </figure>
+
+          <figure class="oot-gallery-item">
+            <a href="assets/otd-024-mf0-top.png">
+              <img src="assets/otd-024-mf0-top.png" width="512" height="384" alt="Painel 3D com a parede de pedra clara e acinzentada, antes da cor de vértice" data-i18n-alt="ootGalleryFourAlt" loading="lazy">
+            </a>
+            <figcaption>
+              <span class="oot-gallery-tag">OTD-024 · mf0_top · <span data-i18n="ootSuperseded">ESTADO SUPERADO</span></span>
+              <span data-i18n="ootGalleryFourCaption">Antes da correção: o port pintava os triângulos texturados de branco. Mantido como comparação, não como estado atual.</span>
+            </figcaption>
+          </figure>
+
+          <figure class="oot-gallery-item">
+            <a href="assets/otd-023-bm33-top.png">
+              <img src="assets/otd-023-bm33-top.png" width="512" height="384" alt="Parede texturizada coberta por pontilhado colorido de alta frequência" data-i18n-alt="ootGalleryFiveAlt" loading="lazy">
+            </a>
+            <figcaption>
+              <span class="oot-gallery-tag">OTD-023 · bm33_top · <span data-i18n="ootSuperseded">ESTADO SUPERADO</span></span>
+              <span data-i18n="ootGalleryFiveCaption">Antes da cadeia de mip: o pontilhado colorido foi diagnosticado como minificação, não como paleta errada. Mantido como evidência da hipótese refutada.</span>
+            </figcaption>
+          </figure>
+
+          <figure class="oot-gallery-item">
+            <a href="assets/otd-019-cl1-top.png">
+              <img src="assets/otd-019-cl1-top.png" width="512" height="384" alt="Cena sintética com polígonos coloridos atravessando o plano de recorte" data-i18n-alt="ootGallerySixAlt" loading="lazy">
+            </a>
+            <figcaption>
+              <span class="oot-gallery-tag">OTD-019 · cl1_top · <span data-i18n="ootSynthetic">CENA DE TESTE</span></span>
+              <span data-i18n="ootGallerySixCaption">Teste sintético do recorte no plano perto, não uma cena do jogo. Prova o comportamento do estágio, não a aparência do port.</span>
+            </figcaption>
+          </figure>
+        </div>
+
+        <p class="oot-small-note" data-i18n="ootGalleryNoVideo">Nenhum vídeo de gameplay foi publicado nesta etapa. Quando existir, será carregado sob demanda e sem autoplay com som.</p>
+      </div>
+    </section>
+
+    <section class="section-pad oot-performance" id="desempenho">
+      <div class="container">
+        <div class="oot-section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="ootPerfEyebrow">07 / DESEMPENHO</p>
+            <h2 data-i18n="ootPerfTitle">Números de uma sala, um ângulo e um build<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="ootPerfLead">As medições são do melonDS 1.1 em modo DS a 67 MHz, com a câmera presa em ROOM_ANGLE 0. Elas não estimam o jogo completo e não foram feitas em DSi físico.</p>
+        </div>
+
+        <p class="oot-table-hint" data-i18n="ootTableHint">Deslize a tabela para o lado para ver todas as colunas.</p>
+        <div class="oot-table-wrap" role="region" tabindex="0" aria-label="Tabela com rolagem horizontal" data-i18n-aria-label="ootTableScroll">
+          <table class="oot-table">
+            <caption data-i18n="ootPerfDefinitionsCaption">Definição dos indicadores usados nesta página.</caption>
+            <thead>
+              <tr>
+                <th scope="col" data-i18n="ootPerfTableIndicator">Indicador</th>
+                <th scope="col" data-i18n="ootPerfTableMeasures">O que mede</th>
+                <th scope="col" data-i18n="ootPerfTableDoesNot">O que não mede</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">FPS</th>
+                <td data-i18n="ootPerfFpsMeasures">Quadros terminados na última janela de 1 segundo do loop.</td>
+                <td data-i18n="ootPerfFpsDoesNot">Não é média histórica, não é taxa do jogo completo e não passa de 60 por causa da espera de VBlank.</td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="ootPerfSimLabel">Taxa de simulação</th>
+                <td data-i18n="ootPerfSimMeasures">Ticks de lógica por segundo, a 20 Hz.</td>
+                <td data-i18n="ootPerfSimDoesNot">Não é taxa de desenho: a lógica continua a 20 Hz com o render a 19 FPS.</td>
+              </tr>
+              <tr>
+                <th scope="row">f</th>
+                <td data-i18n="ootPerfFrameMeasures">Intervalo entre duas chamadas a perfEnd: a iteração inteira.</td>
+                <td data-i18n="ootPerfFrameDoesNot">Não é tempo de GPU; inclui entrada, HUD, lógica e espera de VBlank.</td>
+              </tr>
+              <tr>
+                <th scope="row">s</th>
+                <td data-i18n="ootPerfRenderMeasures">Tempo de CPU entre o início da montagem da cena e depois de glFlush(0).</td>
+                <td data-i18n="ootPerfRenderDoesNot">Não inclui o rasterizador nem a espera de VBlank.</td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="ootPerfGrainLabel">Grão do painel</th>
+                <td data-i18n="ootPerfGrainMeasures">Média da diferença de luminância entre pixels vizinhos no painel 3D.</td>
+                <td data-i18n="ootPerfGrainDoesNot">Não é qualidade visual universal; só compara capturas do mesmo ângulo, câmera e build.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="oot-subheading" data-i18n="ootPerfAbTitle">A/B da cadeia de mip</h3>
+        <p class="oot-table-intro" data-i18n="ootPerfAbIntro">Quatro builds na mesma linhagem, duas capturas por build, todos com o mesmo ângulo. A cadeia desligada é a referência.</p>
+        <p class="oot-table-hint" data-i18n="ootTableHint">Deslize a tabela para o lado para ver todas as colunas.</p>
+        <div class="oot-table-wrap" role="region" tabindex="0" aria-label="Tabela com rolagem horizontal" data-i18n-aria-label="ootTableScroll">
+          <table class="oot-table">
+            <caption data-i18n="ootPerfAbCaption">Comparação de grão, FPS e tempo de render com a cadeia de mip ligada e desligada.</caption>
+            <thead>
+              <tr>
+                <th scope="col" data-i18n="ootPerfTableConfig">Configuração</th>
+                <th scope="col" data-i18n="ootPerfTableGrain">Grão</th>
+                <th scope="col">FPS</th>
+                <th scope="col">f (ms)</th>
+                <th scope="col">s (ms)</th>
+                <th scope="col">r</th>
+                <th scope="col" data-i18n="ootPerfTableCost">Custo ou ganho</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" data-i18n="ootPerfAbOff">Cadeia desligada (MAX 0)</th>
+                <td>4,22</td>
+                <td>20</td>
+                <td>33,4</td>
+                <td>32,4</td>
+                <td>136</td>
+                <td data-i18n="ootPerfAbOffCost">Referência.</td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="ootPerfAbOn">Teto 2 entregue</th>
+                <td>2,91</td>
+                <td>19</td>
+                <td>50,1</td>
+                <td>48,8</td>
+                <td>247</td>
+                <td data-i18n="ootPerfAbOnCost">−31 % de grão por +16,4 ms (34 % do render).</td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="ootPerfAbNull">Teto 2 + seletor descartado</th>
+                <td>4,22</td>
+                <td>19</td>
+                <td>50,1</td>
+                <td>48,1</td>
+                <td>136</td>
+                <td data-i18n="ootPerfAbNullCost">Paga a aritmética, não usa o nível: 15,7 ms.</td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="ootPerfAbProbe">Teto 2 + troca forçada</th>
+                <td>2,91</td>
+                <td>19</td>
+                <td>50,1</td>
+                <td>49,1</td>
+                <td>909</td>
+                <td data-i18n="ootPerfAbProbeCost">+0,3 ms por 662 trocas, 0 pixel de diferença.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="oot-subheading" data-i18n="ootPerfBreakdownTitle">Decomposição do custo da cadeia</h3>
+        <p class="oot-table-hint" data-i18n="ootTableHint">Deslize a tabela para o lado para ver todas as colunas.</p>
+        <div class="oot-table-wrap" role="region" tabindex="0" aria-label="Tabela com rolagem horizontal" data-i18n-aria-label="ootTableScroll">
+          <table class="oot-table">
+            <caption data-i18n="ootPerfBreakdownCaption">Quanto cada parcela da cadeia de mip custa no build medido.</caption>
+            <thead>
+              <tr>
+                <th scope="col" data-i18n="ootPerfTablePart">Parcela</th>
+                <th scope="col" data-i18n="ootPerfTableMethod">Como foi isolada</th>
+                <th scope="col" data-i18n="ootPerfTableValue">Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" data-i18n="ootPerfPartArithmetic">Aritmética do seletor</th>
+                <td data-i18n="ootPerfPartArithmeticMethod">Build que calcula o nível e descarta o resultado.</td>
+                <td>15,7 ms (96 %)</td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="ootPerfPartChoose">Escolha do nível, cache e bind</th>
+                <td data-i18n="ootPerfPartChooseMethod">Build entregue menos o build que descarta o resultado.</td>
+                <td>0,7 ms</td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="ootPerfPartSwap">Troca de textura</th>
+                <td data-i18n="ootPerfPartSwapMethod">Uma ligação forçada por triângulo, mesmo id e mesmos pixels.</td>
+                <td>0,45 µs por troca; 662 = 0,3 ms</td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="ootPerfPartUpload">Upload de textura</th>
+                <td data-i18n="ootPerfPartUploadMethod">Contador Tex b0 nos quatro builds em repouso.</td>
+                <td data-i18n="ootPerfPartUploadValue">0 por quadro; o cache acerta tudo.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="oot-caveat"><strong data-i18n="ootPerfCaveatStrong">O FPS não explica a causa.</strong> <span data-i18n="ootPerfCaveatText">20 → 19 é um quadro; o número que explica o custo é s, o tempo de render de CPU. O rasterizador não entra em s. A cadeia de mip continua como compromisso em avaliação, não como conclusão fechada.</span></p>
+        <p class="oot-small-note"><span data-i18n="ootPerfDataNote">Os dados completos, com condição e método de cada medição, estão em</span> <a href="data/oot-dsi-progress.json">data/oot-dsi-progress.json</a> <span data-i18n="ootPerfDataSchema">(esquema 1.0.0)</span>.</p>
+      </div>
+    </section>
+
+    <section class="section-pad oot-history" id="historico">
+      <div class="container">
+        <div class="oot-section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="ootHistoryEyebrow">08 / HISTÓRICO</p>
+            <h2 data-i18n="ootHistoryTitle">30 entregas, com identificadores estáveis<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="ootHistoryLead">OTD-NNN identifica uma entrega registrada, não uma fase. A ordem é a de registro, não necessariamente a de execução. Correções não são apagadas: entram como retratação ou entrega-filha.</p>
+        </div>
+
+        <ol class="oot-timeline">
+          <li>
+            <span class="oot-timeline-date">2026-10-26</span>
+            <span class="oot-timeline-id">OTD-001</span>
+            <div><strong data-i18n="ootTlOneTitle">Sonda do ambiente DSi no emulador</strong><span data-i18n="ootTlOneText">Modo, clock, heap, RAM, SD e duas telas. Confirmação em hardware físico segue pendente.</span></div>
+            <span class="oot-timeline-state" data-i18n="ootStateEmulator">emulador</span>
+          </li>
+          <li>
+            <span class="oot-timeline-date">2026-10-26</span>
+            <span class="oot-timeline-id">OTD-002</span>
+            <div><strong data-i18n="ootTlTwoTitle">Loop de 20 Hz, memória e telemetria</strong><span data-i18n="ootTlTwoText">Base de tempo, escalonador, arena de memória e telemetria que não mente.</span></div>
+            <span class="oot-timeline-state" data-i18n="ootStateEmulator">emulador</span>
+          </li>
+          <li>
+            <span class="oot-timeline-date">2026-10-26</span>
+            <span class="oot-timeline-id">OTD-004</span>
+            <div><strong data-i18n="ootTlThreeTitle">Primeira display list F3DEX2 no geometry engine</strong><span data-i18n="ootTlThreeText">A geometria deixa de ser transformação fixa e passa a vir de uma lista.</span></div>
+            <span class="oot-timeline-state" data-i18n="ootStateEmulator">emulador</span>
+          </li>
+          <li>
+            <span class="oot-timeline-date">2026-10-27</span>
+            <span class="oot-timeline-id">OTD-009</span>
+            <div><strong data-i18n="ootTlFourTitle">Combiner do ciclo 0 e viewport</strong><span data-i18n="ootTlFourText">Cada material escolhe seu modo e a cena ganha a área de renderização do jogo.</span></div>
+            <span class="oot-timeline-state" data-i18n="ootStateEmulator">emulador</span>
+          </li>
+          <li>
+            <span class="oot-timeline-date">2026-10-27</span>
+            <span class="oot-timeline-id">OTD-019</span>
+            <div><strong data-i18n="ootTlFiveTitle">Recorte no plano perto</strong><span data-i18n="ootTlFiveText">O estágio equivalente ao RSP passa a cortar polígonos em espaço de olho.</span></div>
+            <span class="oot-timeline-state" data-i18n="ootStateEmulator">emulador</span>
+          </li>
+          <li>
+            <span class="oot-timeline-date">2026-10-27</span>
+            <span class="oot-timeline-id">OTD-021</span>
+            <div><strong data-i18n="ootTlSixTitle">Assets lidos do cartão SD em streaming</strong><span data-i18n="ootTlSixText">O blob inteiro deixa de precisar caber na RAM. A vazão real de SD só pode ser medida em hardware.</span></div>
+            <span class="oot-timeline-state" data-i18n="ootStateEmulator">emulador</span>
+          </li>
+          <li>
+            <span class="oot-timeline-date">2026-10-27</span>
+            <span class="oot-timeline-id">OTD-022</span>
+            <div><strong data-i18n="ootTlSevenTitle">Primeira sala real: market_day_room_0</strong><span data-i18n="ootTlSevenText">510 triângulos na tela de cima. O bloqueio era ordem de bytes, não versão da cópia de referência.</span></div>
+            <span class="oot-timeline-state" data-i18n="ootStateEmulator">emulador</span>
+          </li>
+          <li class="oot-timeline-retraction">
+            <span class="oot-timeline-date">2026-10-27</span>
+            <span class="oot-timeline-id">OTD-023</span>
+            <div><strong data-i18n="ootTlEightTitle">Sala texturizada: o confete era minificação</strong><span data-i18n="ootTlEightText">A hipótese de paleta errada é refutada; o GE amostra um texel por pixel, sem filtro.</span></div>
+            <span class="oot-timeline-state" data-i18n="ootStateEmulator">emulador</span>
+          </li>
+          <li class="oot-timeline-retraction">
+            <span class="oot-timeline-date">2026-10-27</span>
+            <span class="oot-timeline-id">OTD-024</span>
+            <div><strong data-i18n="ootTlNineTitle">Câmera presa e mip por triângulo</strong><span data-i18n="ootTlNineText">A régua é consertada; o primeiro número publicado é refutado por um erro de escala de 4096 vezes.</span></div>
+            <span class="oot-timeline-state" data-i18n="ootStateEmulator">emulador</span>
+          </li>
+          <li class="oot-timeline-retraction">
+            <span class="oot-timeline-date">2026-10-27</span>
+            <span class="oot-timeline-id">OTD-026</span>
+            <div><strong data-i18n="ootTlTenTitle">O custo do mip era aritmética por face</strong><span data-i18n="ootTlTenText">O build de controle refuta a troca de textura como causa; a tabela de recíprocos devolve 2,1 ms.</span></div>
+            <span class="oot-timeline-state" data-i18n="ootStateEmulator">emulador</span>
+          </li>
+          <li>
+            <span class="oot-timeline-date">2026-10-27</span>
+            <span class="oot-timeline-id">OTD-028</span>
+            <div><strong data-i18n="ootTlElevenTitle">Cor de vértice no combiner</strong><span data-i18n="ootTlElevenText">O comentário que justificava o branco é corrigido; a sala ganha o gradiente de pedra por +0,5 ms.</span></div>
+            <span class="oot-timeline-state" data-i18n="ootStateEmulator">emulador</span>
+          </li>
+          <li>
+            <span class="oot-timeline-date">2026-10-27</span>
+            <span class="oot-timeline-id">OTD-029</span>
+            <div><strong data-i18n="ootTlTwelveTitle">Lerp de duas texturas em segunda passada</strong><span data-i18n="ootTlTwelveText">560 pixels mudam com +1,3 ms; o alpha zero da segunda imagem quase descarta o caminho inteiro.</span></div>
+            <span class="oot-timeline-state" data-i18n="ootStateEmulator">emulador</span>
+          </li>
+          <li class="oot-timeline-retraction">
+            <span class="oot-timeline-date">2026-10-27</span>
+            <span class="oot-timeline-id">OTD-030</span>
+            <div><strong data-i18n="ootTlThirteenTitle">Preço da troca de textura e semântica dos contadores</strong><span data-i18n="ootTlThirteenText">0,45 µs por troca; 96 % do custo da cadeia é aritmética. Duas retratações registradas.</span></div>
+            <span class="oot-timeline-state" data-i18n="ootStateEmulator">emulador</span>
+          </li>
+        </ol>
+
+        <div class="oot-retractions">
+          <h3 data-i18n="ootRetractionsTitle">Retratações registradas</h3>
+          <p class="oot-table-intro" data-i18n="ootRetractionsLead">Uma conclusão corrigida não é apagada. Ela fica registrada com a evidência nova e a conclusão vigente.</p>
+          <div class="oot-retraction-grid">
+            <article class="oot-retraction-card">
+              <span class="oot-gallery-tag">OTD-023</span>
+              <p><strong data-i18n="ootRetractionPrevious">Antes:</strong> <span data-i18n="ootRetractionPaletteBefore">o pontilhado colorido vinha de paleta CI errada.</span></p>
+              <p><strong data-i18n="ootRetractionCurrent">Agora:</strong> <span data-i18n="ootRetractionPaletteAfter">a paleta está correta; o defeito é minificação.</span></p>
+            </article>
+            <article class="oot-retraction-card">
+              <span class="oot-gallery-tag">OTD-024 · OTD-025</span>
+              <p><strong data-i18n="ootRetractionPrevious">Antes:</strong> <span data-i18n="ootRetractionScaleBefore">nenhuma face minificava (Lo 646/0/0/0).</span></p>
+              <p><strong data-i18n="ootRetractionCurrent">Agora:</strong> <span data-i18n="ootRetractionScaleAfter">a sala minifica muito (Lo 2/25/256/363); a sonda estava 4096× maior.</span></p>
+            </article>
+            <article class="oot-retraction-card">
+              <span class="oot-gallery-tag">OTD-026</span>
+              <p><strong data-i18n="ootRetractionPrevious">Antes:</strong> <span data-i18n="ootRetractionSwapBefore">o custo do mip era a troca de textura.</span></p>
+              <p><strong data-i18n="ootRetractionCurrent">Agora:</strong> <span data-i18n="ootRetractionSwapAfter">o custo é aritmética por face; os binds cabem no ruído.</span></p>
+            </article>
+            <article class="oot-retraction-card">
+              <span class="oot-gallery-tag">OTD-027</span>
+              <p><strong data-i18n="ootRetractionPrevious">Antes:</strong> <span data-i18n="ootRetractionAreaBefore">a área em espaço de olho seria o próximo corte.</span></p>
+              <p><strong data-i18n="ootRetractionCurrent">Agora:</strong> <span data-i18n="ootRetractionAreaAfter">a formulação empatou; o ganho veio do limite de 32 bits.</span></p>
+            </article>
+            <article class="oot-retraction-card">
+              <span class="oot-gallery-tag">OTD-030</span>
+              <p><strong data-i18n="ootRetractionPrevious">Antes:</strong> <span data-i18n="ootRetractionGroupBefore">agrupar primitivos por nível pagaria.</span></p>
+              <p><strong data-i18n="ootRetractionCurrent">Agora:</strong> <span data-i18n="ootRetractionGroupAfter">0,45 µs por troca; 111 trocas valem no máximo 0,7 ms.</span></p>
+            </article>
+            <article class="oot-retraction-card">
+              <span class="oot-gallery-tag">OTD-030</span>
+              <p><strong data-i18n="ootRetractionPrevious">Antes:</strong> <span data-i18n="ootRetractionSegmentBefore">42,1 % das segundas imagens estavam num segmento que o build não montava.</span></p>
+              <p><strong data-i18n="ootRetractionCurrent">Agora:</strong> <span data-i18n="ootRetractionSegmentAfter">o segmento 2 resolve a sala carregada; o limite é carregar a cena de cada sala.</span></p>
+            </article>
+          </div>
+        </div>
+
+        <p class="oot-small-note"><span data-i18n="ootHistorySource">Os históricos técnicos completos (HISTORICO_MOTOR_GRAFICO.md, HISTORICO_JOGO.md e HISTORICO_FASES.md) estão na raiz deste repositório. O recorte estruturado das 30 entregas está em data/oot-dsi-progress.json.</span> <a href="https://github.com/agonisingbasher/ocarina-of-time-dsi/tree/main/docs/publico" target="_blank" rel="noreferrer" data-i18n="ootHistoryRepoLink">Ver os documentos públicos do projeto ↗</a></p>
+      </div>
+    </section>
+
+    <section class="section-pad oot-next" id="proximos">
+      <div class="container">
+        <div class="oot-section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="ootNextEyebrow">09 / PRÓXIMOS PASSOS</p>
+            <h2 data-i18n="ootNextTitle">O próximo marco é uma fatia jogável, não uma promessa<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="ootNextLead">Nenhum prazo, versão ou percentual é prometido. Cada item será registrado como uma nova entrega OTD-NNN quando houver medição.</p>
+        </div>
+        <ul class="oot-next-list">
+          <li data-i18n="ootNextOne">Fatia jogável: uma sala com Link controlável, câmera e colisão básica, com critérios próprios de validação.</li>
+          <li data-i18n="ootNextTwo">Registrar as dependências que faltam para o Link real — objeto, animação e colisão da cena — antes de qualquer substituto.</li>
+          <li data-i18n="ootNextThree">Transição para uma segunda sala com ids de objeto montados como segmentos.</li>
+          <li data-i18n="ootNextFour">Carregar o arquivo da cena de cada sala para resolver as segundas imagens do lerp.</li>
+          <li data-i18n="ootNextFive">Cobrir G_TT_IA16 e as segundas imagens CI/IA/I.</li>
+          <li data-i18n="ootNextSix">Refazer a varredura de ROOM_ANGLE e reportar grão e custo por vista.</li>
+          <li data-i18n="ootNextSeven">Atacar o restante do custo da cadeia de mip, que está na projeção por canto.</li>
+          <li data-i18n="ootNextEight">Validar o build em DSi físico via TWiLight Menu++ / nds-bootstrap; o portão de hardware continua aberto.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section-pad oot-credits" id="creditos">
+      <div class="container">
+        <div class="oot-section-heading">
+          <div>
+            <p class="eyebrow eyebrow-dark" data-i18n="ootCreditsEyebrow">10 / CRÉDITOS E CONTATO</p>
+            <h2 data-i18n="ootCreditsTitle">Código integrado, adaptações próprias e bibliotecas<span class="heading-period">.</span></h2>
+          </div>
+          <p class="section-intro" data-i18n="ootCreditsLead">O projeto integra a decompilação; não a reescreve. As adaptações próprias estão nas camadas de plataforma e no motor gráfico.</p>
+        </div>
+
+        <p class="oot-table-hint" data-i18n="ootTableHint">Deslize a tabela para o lado para ver todas as colunas.</p>
+        <div class="oot-table-wrap" role="region" tabindex="0" aria-label="Tabela com rolagem horizontal" data-i18n-aria-label="ootTableScroll">
+          <table class="oot-table">
+            <caption data-i18n="ootCreditsCaption">Créditos, versões e licenças do projeto.</caption>
+            <thead>
+              <tr>
+                <th scope="col" data-i18n="ootCreditsTableComponent">Componente</th>
+                <th scope="col" data-i18n="ootCreditsTableRole">Papel</th>
+                <th scope="col" data-i18n="ootCreditsTableSource">Origem e versão</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">zeldaret/oot</th>
+                <td data-i18n="ootCreditDecompRole">Lógica do jogo, tipos, macros F3DEX2 e tabelas.</td>
+                <td data-i18n="ootCreditDecompSource">Commit 14759abf9abb4295de142cdc1452998630ea70fb (main, 2026-10-18). Licença do repositório de origem.</td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="ootCreditOwnComponent">Código próprio do port</th>
+                <td data-i18n="ootCreditOwnRole">source/gfx, source/nds, source/ui, source/main.c e ferramentas/.</td>
+                <td data-i18n="ootCreditOwnSource">Árvore local sem identificador de versão; licença declarada na raiz do projeto, quando houver.</td>
+              </tr>
+              <tr>
+                <th scope="row">devkitARM</th>
+                <td data-i18n="ootCreditDevkitRole">Compilador e binutils para ARM9.</td>
+                <td>r68-1 (GCC 16.1.0), binutils 2.46.0.</td>
+              </tr>
+              <tr>
+                <th scope="row">libnds · libfat · maxmod · Calico · ndstool</th>
+                <td data-i18n="ootCreditLibsRole">Vídeo, interrupções, timers, console, cartão SD, áudio e empacotamento do .nds.</td>
+                <td data-i18n="ootCreditLibsSource">libnds 2.0.2, Calico 1.2.0, ndstool 2.3.1; pacotes do devkitPro. maxmod ainda não integrado ao jogo.</td>
+              </tr>
+              <tr>
+                <th scope="row">melonDS</th>
+                <td data-i18n="ootCreditEmuRole">Emulador usado em todas as validações registradas.</td>
+                <td data-i18n="ootCreditEmuSource">Versão 1.1; não é distribuído com o projeto.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="oot-credits-notes">
+          <p data-i18n="ootCreditsAssets">Nenhum arquivo de jogo, asset extraído ou tabela do jogo é distribuído com este site. As capturas são evidência técnica do port em execução e não devem ser reutilizadas fora deste contexto.</p>
+          <p data-i18n="ootCreditsTrademark">The Legend of Zelda e Ocarina of Time são marcas da Nintendo. Este é um projeto de engenharia independente, sem afiliação com a Nintendo.</p>
+        </div>
+
+        <div class="oot-contact">
+          <div>
+            <h3 data-i18n="ootContactTitle">Encontrou um erro ou quer acompanhar?</h3>
+            <p data-i18n="ootContactText">Relatos sobre a apresentação, os dados ou as capturas ajudam a corrigir o que esta página afirma. Para dúvidas técnicas, cite o identificador OTD-NNN e a condição da medição.</p>
+          </div>
+          <div class="oot-contact-actions">
+            <a class="button button-primary" href="https://agonisingbasher.github.io/personal-website/feedback.html?categoria=Ocarina%20de%20Time%20DSi" data-i18n="ootContactFeedback" data-lang-link target="_blank" rel="noreferrer">Enviar feedback</a>
+            <a class="text-link" href="https://agonisingbasher.github.io/personal-website/index.html#projetos" data-i18n="ootContactBack" target="_blank" rel="noreferrer">Voltar ao portfólio</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="oot-page-footer">
+    <div class="container">
+      <a class="brand footer-brand" href="https://agonisingbasher.github.io/personal-website/index.html#inicio" target="_blank" rel="noreferrer"><span class="brand-mark" aria-hidden="true">A<span>.</span></span><span>AGONISING<span class="brand-light">BASHER</span></span></a>
+      <span data-i18n="footerCredit">FEITO COM CURIOSIDADE, POR FELIPE ALEXANDRE.</span>
+      <a href="https://agonisingbasher.github.io/personal-website/feedback.html?categoria=Ocarina%20de%20Time%20DSi" data-i18n="feedbackLink" data-lang-link target="_blank" rel="noreferrer">FEEDBACK / BUGS ↗</a>
+      <a href="#inicio" data-i18n="ootBackToTop">VOLTAR AO TOPO ↑</a>
+    </div>
+  </footer>
+</body>
+</html>
