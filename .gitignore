@@ -1,0 +1,22 @@
+# Código da decompilação e conteúdo proprietário do jogo
+game/
+Rom/
+*.n64
+*.z64
+*.vd64
+
+# Artefatos de build
+build/
+*.o
+*.d
+*.elf
+*.nds
+*.lst
+*.map
+
+# Arquivos locais e caches
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+Shipwright-develop.zip
