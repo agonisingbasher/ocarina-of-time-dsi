@@ -24,7 +24,9 @@ HISTORICO_*.md       históricos técnicos completos do motor e do jogo
 ```
 
 A apresentação pública fica em [`docs/`](docs/), publicada em
-<https://agonisingbasher.github.io/ocarina-of-time-dsi/>, e o portfólio
+<https://agonisingbasher.github.io/ocarina-of-time-dsi/>. O Pages deste repositório publica a raiz,
+então o `index.html` e o `.nojekyll` da raiz só servem para redirecionar para `docs/`; se a pasta
+publicada mudar para `/docs` em Settings → Pages, os dois podem ser apagados. O portfólio
 [agonisingbasher.github.io/personal-website](https://agonisingbasher.github.io/personal-website/index.html#projetos)
 mantém apenas o card que aponta para ela. Os espelhos que precisam continuar sincronizados estão
 listados em [`docs/README.md`](docs/README.md).

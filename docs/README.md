@@ -2,7 +2,8 @@
 
 Esta pasta é a raiz do site publicado em <https://agonisingbasher.github.io/ocarina-of-time-dsi/>.
 O GitHub Pages só aceita a raiz do repositório ou `docs/` como pasta publicada, por isso o site
-mora aqui.
+mora aqui. Enquanto a pasta publicada for a raiz, o `index.html` do repositório redireciona para
+cá; mover a publicação para `/docs` em Settings → Pages dispensa o redirecionamento.
 
 | Arquivo | O que é |
 | --- | --- |
