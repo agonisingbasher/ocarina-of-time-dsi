@@ -906,5 +906,6 @@
       <a href="#inicio" data-i18n="ootBackToTop">VOLTAR AO TOPO ↑</a>
     </div>
   </footer>
+<script>(()=>{const b=document.querySelector('[data-lang-toggle]');if(!b)return;const box=document.createElement('span');box.style.cssText='display:inline-flex;gap:6px;margin-left:6px';for(const [code,label] of [['es','ES'],['fr','FR']]){const a=document.createElement('a');const u=new URL(location.href);u.searchParams.set('lang','pt-BR');a.href=`https://translate.google.com/translate?sl=pt&tl=${code}&u=${encodeURIComponent(u.href)}`;a.textContent=label;a.style.cssText='display:grid;place-items:center;min-width:34px;min-height:34px;border:1px solid #ffffff4a;color:#f4f3ed;font-size:.68rem;font-weight:700;text-decoration:none';a.setAttribute('aria-label',code==='es'?'Traducir página al español':'Traduire la page en français');box.append(a)}b.insertAdjacentElement('afterend',box)})();</script>
 </body>
 </html>
