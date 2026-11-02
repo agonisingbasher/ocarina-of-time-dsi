@@ -35,6 +35,9 @@ h1, h2, h3, p { margin-top: 0; }
 .main-nav .language-toggle { min-width: 39px; padding: 6px 8px; border: 1px solid #57d7f588; border-radius: 3px; background: #57d7f510; color: var(--cyan); cursor: pointer; font: 500 .7rem var(--mono); transition: background .2s ease, color .2s ease; }
 .main-nav .language-toggle:hover { background: var(--cyan); color: #10212a; }
 .main-nav .language-toggle:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+/* Os quatro idiomas ficam num grupo so: o nav da 32px entre itens, mas as opcoes
+   entre si precisam de um vao proprio, senao o grupo inteiro parece um so botao. */
+.language-switch { display: inline-flex; gap: 5px; }
 .eyebrow { margin: 0; color: var(--cyan); font: 500 .7rem/1.6 var(--mono); letter-spacing: .09em; text-transform: uppercase; }
 .eyebrow-dark { color: #247c98; }
 h2 { margin: 10px 0 0; font-size: clamp(2.1rem, 4vw, 3.25rem); font-weight: 600; letter-spacing: -.06em; line-height: 1.1; }
@@ -58,6 +61,7 @@ h2 { margin: 10px 0 0; font-size: clamp(2.1rem, 4vw, 3.25rem); font-weight: 600;
 .oot-page .main-nav .language-toggle { border-color: #d3b26a88; background: #d3b26a10; color: var(--oot-gold); }
 .oot-page .main-nav .language-toggle:hover { background: var(--oot-gold); color: #10211a; }
 .oot-page .main-nav .language-toggle:focus-visible { outline-color: var(--oot-gold); }
+.main-nav .language-toggle[aria-pressed="true"] { border-color: var(--oot-gold); background: var(--oot-gold); color: #10211a; }
 .oot-page .button-primary { background: var(--oot-gold); color: #14200f; }
 .oot-page .button-primary:hover { background: var(--oot-gold-soft); }
 .oot-page .text-link { color: #d6d0bd; }
@@ -278,6 +282,11 @@ h2 { margin: 10px 0 0; font-size: clamp(2.1rem, 4vw, 3.25rem); font-weight: 600;
   .brand { gap: 7px; font-size: .66rem; }
   .brand-mark { width: 30px; height: 30px; }
   .main-nav { width: 100%; justify-content: space-between; gap: 6px; font-size: .7rem; }
+  /* Quatro idiomas no nav: em 320px a linha nao cabe e o flex espreme os rotulos.
+     Melhor a linha inteira descer do que o texto quebrar dentro do link. */
+  .main-nav { flex-wrap: wrap; row-gap: 10px; justify-content: flex-start; }
+  .main-nav a { white-space: nowrap; }
+  .language-switch { gap: 3px; }
   .main-nav .nav-contact { padding: 5px 8px; }
   .main-nav .language-toggle { min-width: 34px; padding-inline: 5px; }
   .section-pad { padding: 73px 0; }

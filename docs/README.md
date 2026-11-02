@@ -29,9 +29,18 @@ e atualizar só um dos dois deixa o site desalinhado do projeto:
 
 ## Idioma
 
-A página lê `?lang=pt-BR` ou `?lang=en`, depois o valor salvo em `localStorage` com a chave
+Quatro idiomas com dicionário próprio — pt-BR, EN, ES e FR — em `oot.js`. O seletor são os quatro
+botões `PT / EN / ES / FR` do cabeçalho. Não existe link para o Google Translate na página, e nada
+do que aparece em espanhol ou francês passa por ele: tudo vem dos dicionários escritos aqui.
+
+A ordem de decisão é `?lang=` > valor salvo em `localStorage` com a chave
 `agonisingbasher-language` — a mesma usada pelo portfólio, para que o idioma escolhido em um site
-continue válido no outro.
+continue válido no outro > `navigator.languages` > pt-BR. Sem `?lang=` e sem escolha gravada, o
+navegador decide: quem abre com o sistema em espanhol ou francês já cai no idioma dele. Qualquer
+`pt-*` resolve em `pt-BR`, única variante portuguesa traduzida.
+
+Os dicionários ES e FR fecham a paridade com o PT chave por chave; uma chave ausente cai no texto
+português que já está no HTML em vez de imprimir `undefined`.
 
 ## O que não vai para o site
 

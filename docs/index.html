@@ -20,7 +20,12 @@
         <a href="https://agonisingbasher.github.io/personal-website/index.html#projetos" data-i18n="navProjects" target="_blank" rel="noreferrer">Projetos</a>
         <a href="https://agonisingbasher.github.io/personal-website/index.html#sobre" data-i18n="navAbout" target="_blank" rel="noreferrer">Sobre mim</a>
         <a class="nav-contact" href="https://agonisingbasher.github.io/personal-website/index.html#conectar" target="_blank" rel="noreferrer"><span data-i18n="navConnect">Conectar</span> <span aria-hidden="true">↗</span></a>
-        <button class="language-toggle" type="button" data-lang-toggle aria-label="Mudar idioma para inglês" title="Mudar idioma para inglês">EN</button>
+        <span class="language-switch" role="group">
+          <button class="language-toggle" type="button" data-lang-option="pt-BR" lang="pt" aria-label="Português">PT</button>
+          <button class="language-toggle" type="button" data-lang-option="en" lang="en" aria-label="English">EN</button>
+          <button class="language-toggle" type="button" data-lang-option="es" lang="es" aria-label="Español">ES</button>
+          <button class="language-toggle" type="button" data-lang-option="fr" lang="fr" aria-label="Français">FR</button>
+        </span>
       </nav>
     </div>
   </header>
@@ -906,6 +911,6 @@
       <a href="#inicio" data-i18n="ootBackToTop">VOLTAR AO TOPO ↑</a>
     </div>
   </footer>
-<script>(()=>{const b=document.querySelector('[data-lang-toggle]');if(!b)return;const box=document.createElement('span');box.style.cssText='display:inline-flex;gap:6px;margin-left:6px';for(const [code,label] of [['es','ES'],['fr','FR']]){const a=document.createElement('a');const u=new URL(location.href);u.searchParams.set('lang','pt-BR');a.href=`https://translate.google.com/translate?sl=pt&tl=${code}&u=${encodeURIComponent(u.href)}`;a.textContent=label;a.style.cssText='display:grid;place-items:center;min-width:34px;min-height:34px;border:1px solid #ffffff4a;color:#f4f3ed;font-size:.68rem;font-weight:700;text-decoration:none';a.setAttribute('aria-label',code==='es'?'Traducir página al español':'Traduire la page en français');box.append(a)}b.insertAdjacentElement('afterend',box)})();</script>
+
 </body>
 </html>
