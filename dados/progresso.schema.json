@@ -213,7 +213,7 @@
       "additionalProperties": false,
       "properties": {
         "indicador": {
-          "enum": ["fps", "taxa_simulacao_hz", "tempo_quadro_ms", "tempo_render_ms", "tempo_submissao_ms", "grao", "contagem", "percentual", "vazao_mb_s"]
+          "enum": ["fps", "taxa_simulacao_hz", "tempo_quadro_ms", "tempo_render_ms", "tempo_submissao_ms", "tempo_animacao_ms", "grao", "contagem", "percentual", "vazao_mb_s"]
         },
         "valor": { "type": "number" },
         "unidade": { "type": "string" },

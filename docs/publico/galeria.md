@@ -1,261 +1,101 @@
 # Galeria
 
-> Gerado de `dados/progresso.json` e `evidencias/MANIFESTO.csv`. As imagens são capturas reais do melonDS 1.1 em modo DS, não renderizações ilustrativas e não hardware físico.
+> Gerado de `docs/data/oot-dsi-progress.json`, campo `evidencias_publicadas`. As imagens são capturas reais do melonDS 1.1 em modo DS, não renderizações ilustrativas e não hardware físico.
 
-Cada imagem mostra o painel 3D do DS (ou a janela completa) em um estado de teste. Uma captura prova o que estava na tela naquele build e naquela câmera; não prova que o jogo inteiro funciona. O conjunto completo, com hash de cada arquivo, está em [`evidencias/`](../../evidencias/).
+São 6 capturas, e elas são tudo o que este repositório publica: cada uma mostra o painel 3D do DS (ou a janela completa) em um build e uma câmera declarados. Uma captura prova o que estava na tela naquele quadro, não que o jogo inteiro funciona. O conjunto de evidências de cada entrega fica no projeto de desenvolvimento, com hash em `evidencias/publicas/MANIFESTO.csv`.
 
-## OTD-002 — Base do loop: tempo, escalonador de 20 Hz, memória e telemetria
+## OTD-019 — `otd-019-cl1-top.png`
 
-!`OTD-002 — yaz0.png (../../evidencias/OTD-002/yaz0.png)`
+![OTD-019 — cl1_top](../assets/otd-019-cl1-top.png)
 
-*`yaz0.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-002.md).*
+Cena sintética de teste do recorte no plano perto: polígonos coloridos atravessam a câmera.
 
-Pasta completa: `evidencias/OTD-002/` (1 arquivo(s)).
+| Campo | Valor |
+|---|---|
+| Cena | cena sintética de teste de recorte |
+| Câmera | câmera de teste |
+| Build | OTD-019 |
+| Configuração | recorte no plano perto em espaço de olho |
+| Leitura | Prova o comportamento do recorte, não o jogo. |
 
-## OTD-006 — Projeção vinda da display list e pilha de matrizes por tipo
+Detalhes da entrega em [resumo de OTD-019](resumos/OTD-019.md).
 
-!`OTD-006 — mtx9_top.png (../../evidencias/OTD-006/mtx9_top.png)`
+## OTD-023 — `otd-023-bm33-top.png`
 
-*`mtx9_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-006.md).*
+![OTD-023 — bm33_top](../assets/otd-023-bm33-top.png)
 
-!`OTD-006 — mtx9.png (../../evidencias/OTD-006/mtx9.png)`
+Estado anterior à cadeia de mip: a sala texturizada aparece com pontilhado colorido de alta frequência.
 
-*`mtx9.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-006.md).*
+| Campo | Valor |
+|---|---|
+| Cena | Bmori1_room_0, 646 triângulos |
+| Câmera | ROOM_ANGLE 0 |
+| Build | OTD-023, antes da cadeia de mip |
+| Configuração | sem cadeia de mip |
+| Leitura | Estado superado, mantido como evidência da hipótese de paleta refutada. |
 
-Pasta completa: `evidencias/OTD-006/` (2 arquivo(s)).
+Detalhes da entrega em [resumo de OTD-023](resumos/OTD-023.md).
 
-## OTD-008 — Cache de textura com substituição LRU
+## OTD-024 — `otd-024-mf0-top.png`
 
-!`OTD-008 — ev4_top.png (../../evidencias/OTD-008/ev4_top.png)`
+![OTD-024 — mf0_top](../assets/otd-024-mf0-top.png)
 
-*`ev4_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-008.md).*
+Estado anterior à cor de vértice: o painel ainda era pintado de branco pelo port.
 
-!`OTD-008 — ev4.png (../../evidencias/OTD-008/ev4.png)`
+| Campo | Valor |
+|---|---|
+| Cena | Bmori1_room_0, 646 triângulos |
+| Câmera | ROOM_ANGLE 0 |
+| Build | OTD-024, cadeia de mip no teto 2 |
+| Configuração | GE_TEX_MIP_MAX 2, sem cor de vértice |
+| Leitura | Estado superado, mantido para comparação com o painel colorido. |
 
-*`ev4.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-008.md).*
+Detalhes da entrega em [resumo de OTD-024](resumos/OTD-024.md).
 
-Pasta completa: `evidencias/OTD-008/` (2 arquivo(s)).
+## OTD-028 — `otd-028-f10e-top.png`
 
-## OTD-009 — Combiner do ciclo 0 e viewport do N64
+![OTD-028 — f10e_top](../assets/otd-028-f10e-top.png)
 
-!`OTD-009 — cc1_top.png (../../evidencias/OTD-009/cc1_top.png)`
+O mesmo painel depois de aplicar a cor de vértice no combiner: a pedra ganha o gradiente escuro da sala.
 
-*`cc1_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-009.md).*
+| Campo | Valor |
+|---|---|
+| Cena | Bmori1_room_0, 646 triângulos |
+| Câmera | ROOM_ANGLE 0 |
+| Build | OTD-028, GE_VTX_SHADE 1 |
+| Configuração | GE_TEX_MIP_MAX 2, GE_TEX_LOD_BIAS 2048, GE_MIP_AREA32 1 |
+| Leitura | Luminância média do painel caiu 71 %; o custo medido foi de 0,5 ms. |
 
-!`OTD-009 — cc1.png (../../evidencias/OTD-009/cc1.png)`
+Detalhes da entrega em [resumo de OTD-028](resumos/OTD-028.md).
 
-*`cc1.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-009.md).*
+## OTD-030 — `otd-030-f12a1.png`
 
-Pasta completa: `evidencias/OTD-009/` (6 arquivo(s)).
+![OTD-030 — f12a1](../assets/otd-030-f12a1.png)
 
-## OTD-010 — Alpha do texel como recorte
+Janela completa do melonDS: a sala na tela de cima e a telemetria na tela de baixo.
 
-!`OTD-010 — cut0_top.png (../../evidencias/OTD-010/cut0_top.png)`
+| Campo | Valor |
+|---|---|
+| Cena | Bmori1_room_0, 646 triângulos |
+| Câmera | ROOM_ANGLE 0, ROOM_SPIN 0 |
+| Build | OTD-030, GE_TEX_MIP_MAX 2 entregue |
+| Configuração | GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048 |
+| Leitura | FPS 19, f 50,1 ms, s 48,8 ms, r 247. Captura de emulador, não de DSi físico. |
 
-*`cut0_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-010.md).*
+Detalhes da entrega em [resumo de OTD-030](resumos/OTD-030.md).
 
-!`OTD-010 — cut0.png (../../evidencias/OTD-010/cut0.png)`
+## OTD-030 — `otd-030-f12a1-top.png`
 
-*`cut0.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-010.md).*
+![OTD-030 — f12a1_top](../assets/otd-030-f12a1-top.png)
 
-Pasta completa: `evidencias/OTD-010/` (6 arquivo(s)).
+Recorte do painel 3D do mesmo build entregue, sem a telemetria da tela inferior.
 
-## OTD-012 — Recorte por alpha de paleta CI e disciplina de VRAM
+| Campo | Valor |
+|---|---|
+| Cena | Bmori1_room_0, 646 triângulos |
+| Câmera | ROOM_ANGLE 0, ROOM_SPIN 0 |
+| Build | OTD-030, GE_TEX_MIP_MAX 2 entregue |
+| Configuração | GE_LERP 2, GE_VTX_SHADE 1, GE_MIP_EYE 0, GE_MIP_AREA32 1, GE_TEX_LOD_BIAS 2048 |
+| Leitura | Mesmo painel da janela completa; md5 fa1c5bc0a368ae6f5e8cb81858dae114. |
 
-!`OTD-012 — mtx4.png (../../evidencias/OTD-012/mtx4.png)`
-
-*`mtx4.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-012.md).*
-
-Pasta completa: `evidencias/OTD-012/` (1 arquivo(s)).
-
-## OTD-019 — Recorte de polígono no plano perto
-
-!`OTD-019 — cl1_top.png (../../evidencias/OTD-019/cl1_top.png)`
-
-*`cl1_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-019.md).*
-
-!`OTD-019 — cl1.png (../../evidencias/OTD-019/cl1.png)`
-
-*`cl1.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-019.md).*
-
-Pasta completa: `evidencias/OTD-019/` (21 arquivo(s)).
-
-## OTD-020 — Entrada: teclas do DS e toque viram o contrato BTN_*
-
-!`OTD-020 — in3_top.png (../../evidencias/OTD-020/in3_top.png)`
-
-*`in3_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-020.md).*
-
-!`OTD-020 — in3.png (../../evidencias/OTD-020/in3.png)`
-
-*`in3.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-020.md).*
-
-Pasta completa: `evidencias/OTD-020/` (6 arquivo(s)).
-
-## OTD-021 — fs: assets lidos do cartão SD em streaming
-
-!`OTD-021 — fs0_top.png (../../evidencias/OTD-021/fs0_top.png)`
-
-*`fs0_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-021.md).*
-
-!`OTD-021 — fs0.png (../../evidencias/OTD-021/fs0.png)`
-
-*`fs0.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-021.md).*
-
-Pasta completa: `evidencias/OTD-021/` (12 arquivo(s)).
-
-## OTD-022 — A primeira sala real do jogo na tela de cima
-
-!`OTD-022 — room5_topbig.png (../../evidencias/OTD-022/room5_topbig.png)`
-
-*`room5_topbig.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-022.md).*
-
-!`OTD-022 — room1_top.png (../../evidencias/OTD-022/room1_top.png)`
-
-*`room1_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-022.md).*
-
-!`OTD-022 — room1.png (../../evidencias/OTD-022/room1.png)`
-
-*`room1.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-022.md).*
-
-Pasta completa: `evidencias/OTD-022/` (10 arquivo(s)).
-
-## OTD-023 — Sala texturizada: o confete era minificação, não paleta
-
-!`OTD-023 — bm27_topbig.png (../../evidencias/OTD-023/bm27_topbig.png)`
-
-*`bm27_topbig.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-023.md).*
-
-!`OTD-023 — bm33_topbig.png (../../evidencias/OTD-023/bm33_topbig.png)`
-
-*`bm33_topbig.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-023.md).*
-
-!`OTD-023 — bm25_top.png (../../evidencias/OTD-023/bm25_top.png)`
-
-*`bm25_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-023.md).*
-
-Pasta completa: `evidencias/OTD-023/` (26 arquivo(s)).
-
-## OTD-024 — Câmera presa como régua e seleção de mip por triângulo
-
-!`OTD-024 — mf0_topbig.png (../../evidencias/OTD-024/mf0_topbig.png)`
-
-*`mf0_topbig.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-024.md).*
-
-!`OTD-024 — mp1_topbig.png (../../evidencias/OTD-024/mp1_topbig.png)`
-
-*`mp1_topbig.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-024.md).*
-
-!`OTD-024 — mf0_top.png (../../evidencias/OTD-024/mf0_top.png)`
-
-*`mf0_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-024.md).*
-
-Pasta completa: `evidencias/OTD-024/` (86 arquivo(s)).
-
-!`OTD-024 — mf0_topbig.png (../../evidencias/OTD-025/mf0_topbig.png)`
-
-*`mf0_topbig.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-024.md).*
-
-!`OTD-024 — mp6_topbig.png (../../evidencias/OTD-025/mp6_topbig.png)`
-
-*`mp6_topbig.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-024.md).*
-
-!`OTD-024 — mf0_top.png (../../evidencias/OTD-025/mf0_top.png)`
-
-*`mf0_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-024.md).*
-
-Pasta completa: `evidencias/OTD-025/` (44 arquivo(s)).
-
-## OTD-025 — Correção de escala da sonda de mip (fator 4096)
-
-!`OTD-025 — mf0_topbig.png (../../evidencias/OTD-024/mf0_topbig.png)`
-
-*`mf0_topbig.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-025.md).*
-
-!`OTD-025 — mp1_topbig.png (../../evidencias/OTD-024/mp1_topbig.png)`
-
-*`mp1_topbig.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-025.md).*
-
-!`OTD-025 — mf0_top.png (../../evidencias/OTD-024/mf0_top.png)`
-
-*`mf0_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-025.md).*
-
-Pasta completa: `evidencias/OTD-024/` (86 arquivo(s)).
-
-!`OTD-025 — mf0_topbig.png (../../evidencias/OTD-025/mf0_topbig.png)`
-
-*`mf0_topbig.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-025.md).*
-
-!`OTD-025 — mp6_topbig.png (../../evidencias/OTD-025/mp6_topbig.png)`
-
-*`mp6_topbig.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-025.md).*
-
-!`OTD-025 — mf0_top.png (../../evidencias/OTD-025/mf0_top.png)`
-
-*`mf0_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-025.md).*
-
-Pasta completa: `evidencias/OTD-025/` (44 arquivo(s)).
-
-## OTD-026 — O custo do mip era aritmética por face; recíproco por tabela devolve 2,1 ms
-
-!`OTD-026 — mi0_topbig.png (../../evidencias/OTD-026/mi0_topbig.png)`
-
-*`mi0_topbig.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-026.md).*
-
-!`OTD-026 — mj0_topbig.png (../../evidencias/OTD-026/mj0_topbig.png)`
-
-*`mj0_topbig.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-026.md).*
-
-!`OTD-026 — mi0_top.png (../../evidencias/OTD-026/mi0_top.png)`
-
-*`mi0_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-026.md).*
-
-Pasta completa: `evidencias/OTD-026/` (47 arquivo(s)).
-
-## OTD-027 — A área em espaço de olho empatou; o ganho estava no tamanho do inteiro
-
-!`OTD-027 — f9a_top.png (../../evidencias/OTD-027/f9a_top.png)`
-
-*`f9a_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-027.md).*
-
-!`OTD-027 — f9a.png (../../evidencias/OTD-027/f9a.png)`
-
-*`f9a.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-027.md).*
-
-Pasta completa: `evidencias/OTD-027/` (27 arquivo(s)).
-
-## OTD-028 — A sala estava branca porque o port a pintava de branco
-
-!`OTD-028 — f10a_top.png (../../evidencias/OTD-028/f10a_top.png)`
-
-*`f10a_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-028.md).*
-
-!`OTD-028 — f10a.png (../../evidencias/OTD-028/f10a.png)`
-
-*`f10a.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-028.md).*
-
-Pasta completa: `evidencias/OTD-028/` (28 arquivo(s)).
-
-## OTD-029 — O lerp de duas texturas virou segunda passada, e o alpha da segunda imagem quase o engoliu
-
-!`OTD-029 — f11f_top.png (../../evidencias/OTD-029/f11f_top.png)`
-
-*`f11f_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-029.md).*
-
-!`OTD-029 — f11e_grab_invalido.png (../../evidencias/OTD-029/f11e_grab_invalido.png)`
-
-*`f11e_grab_invalido.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-029.md).*
-
-Pasta completa: `evidencias/OTD-029/` (21 arquivo(s)).
-
-## OTD-030 — A troca de textura custa 0,45 µs; quem cobra é a aritmética do mip
-
-!`OTD-030 — f12a1_top.png (../../evidencias/OTD-030/f12a1_top.png)`
-
-*`f12a1_top.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-030.md).*
-
-!`OTD-030 — f12a1.png (../../evidencias/OTD-030/f12a1.png)`
-
-*`f12a1.png` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/OTD-030.md).*
-
-Pasta completa: `evidencias/OTD-030/` (19 arquivo(s)).
+Detalhes da entrega em [resumo de OTD-030](resumos/OTD-030.md).

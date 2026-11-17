@@ -36,7 +36,8 @@ STATE_LABEL = {
 }
 INDICATORS = {
     "fps", "taxa_simulacao_hz", "tempo_quadro_ms", "tempo_render_ms",
-    "tempo_submissao_ms", "grao", "contagem", "percentual", "vazao_mb_s",
+    "tempo_submissao_ms", "tempo_animacao_ms", "grao", "contagem",
+    "percentual", "vazao_mb_s",
 }
 ID_LINE_RE = re.compile(
     r"\*\*ID\*\*\s+`(OTD-\d{3})`\s+·\s+\*\*Data\*\*\s+([0-9-]{10})\s+·\s+"
@@ -193,15 +194,18 @@ def check_manifest(data, root):
             arquivo = (row.get("arquivo") or "").strip()
             if folder and arquivo:
                 seen.add(folder + "/" + arquivo)
+    evid = os.path.join(root, "evidencias")
     for entry in data["entregas"]:
         for folder in entry.get("evidencias", []):
             path = os.path.join(root, folder)
             if not os.path.isdir(path):
                 continue
-            for name in os.listdir(path):
-                rel = folder.rsplit("/", 1)[-1] + "/" + name
-                if rel not in seen:
-                    warn("%s: arquivo fora do MANIFESTO: %s" % (entry["id"], name))
+            for base, _dirs, files in os.walk(path):
+                for name in files:
+                    full = os.path.join(base, name)
+                    rel = os.path.relpath(full, evid).replace(os.sep, "/")
+                    if rel not in seen:
+                        warn("%s: arquivo fora do MANIFESTO: %s" % (entry["id"], rel))
 
 
 def check_histories(data, root):
@@ -319,9 +323,10 @@ def main():
         for folder in entry.get("evidencias", []):
             path = os.path.join(root, folder)
             if os.path.isdir(path):
-                for name in os.listdir(path):
-                    if os.path.isfile(os.path.join(path, name)):
-                        evidence_files.add(folder + "/" + name)
+                for base, _dirs, files in os.walk(path):
+                    for name in files:
+                        rel = os.path.relpath(os.path.join(base, name), path).replace(os.sep, "/")
+                        evidence_files.add(folder + "/" + rel)
     total_files = len(evidence_files)
     total_meas = sum(len(e.get("medicoes", [])) for e in data["entregas"])
 

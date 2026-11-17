@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
-"""Gera os documentos públicos derivados de dados/progresso.json.
+"""Gera os documentos públicos em `docs/publico/` a partir do recorte público do site.
+
+Diferente da cópia desta ferramenta no projeto de desenvolvimento, aqui a fonte é
+`docs/data/oot-dsi-progress.json` — o recorte já sanitizado e conferido por esquema,
+que é o mesmo arquivo que a página cita. Assim a camada pública não pode divergir
+do que o site anuncia.
 
 Saídas (todas sob docs/publico/):
   resumos/OTD-NNN.md   resumo legível por entrega
   linha-do-tempo.md    ordem de registro das entregas
   estado-e-limites.md  estado por entrega, pendências e o que ainda não existe
-  galeria.md           capturas reais selecionadas de evidencias/
+  galeria.md           as capturas realmente publicadas neste repositório
 
 Os documentos editoriais (visao-geral, desempenho, creditos, README) são
 escritos à mão. Este script não publica nada: só grava arquivos locais.
@@ -29,6 +34,26 @@ STATE_LABEL = {
 }
 FRONT_LABEL = {"motor": "motor gráfico", "jogo": "jogo", "motor+jogo": "motor gráfico + jogo"}
 
+# Espelha o bloco "ainda não existe" e o "parcial do motor" da página, em docs/index.html.
+NAO_EXISTE = (
+    "sistema geral de atores e objetos em tempo de execução: IA, interações, diálogos, drops e eventos persistentes",
+    "ações completas do jogador: combate, inimigos, itens, natação, escalada e estados de dano",
+    "áudio do jogo: sequências, síntese, bancos e efeitos sonoros integrados ao tempo de execução",
+    "HUD de jogo, textos, menus, mapa, ocarina, equipamentos e inventário utilizável",
+    "salvar e carregar: três arquivos, formato persistente, integridade e seleção",
+    "campanha, masmorras, chefes e cutscenes; carregar áreas pelo fluxo original do jogo, com cenas e objetos conectados em tempo de execução",
+    "execução em DSi físico: nenhuma entrega tem validação em hardware real",
+)
+MOTOR_PARCIAL = (
+    "ciclo 1 do combiner, fontes ENV/PRIMITIVE, `G_TT_IA16`, texturas retangulares, wrap/mask/shift e recorte em `x = ±w` e `y = ±w`",
+    "20 808 triângulos (14,9 %) pedem iluminação do RSP e continuam fora do caminho",
+    "4 063 triângulos (19,3 %) têm segunda imagem CI/IA/I, fora do caminho RGBA16 do lerp",
+    "a cadeia de mip custa +20,6 ms de render na sala 0 — 17,3 % do render enviado — e compra 0,40 unidades de grão, preço medido em OTD-044",
+    "o limite de 750 px por canto e o custo de 0,5 ms da cor de vértice seguem sem explicação fechada",
+    "um ator desenhado custa 39,02 ms por quadro no caminho atual e sozinho estoura o orçamento de 33 ms da meta de 30 FPS",
+    "a folha da porta ainda não se move entre f1.0 e f11.0, e o quadro da troca de sala pode mostrar a sala antiga contra a nova",
+)
+
 
 def fmt_number(value):
     if isinstance(value, bool):
@@ -41,15 +66,8 @@ def fmt_number(value):
 
 
 def load(root):
-    with open(os.path.join(root, "dados", "progresso.json"), "r", encoding="utf-8") as fh:
+    with open(os.path.join(root, "docs", "data", "oot-dsi-progress.json"), "r", encoding="utf-8") as fh:
         return json.load(fh)
-
-
-def evidence_counts(root, folder):
-    path = os.path.join(root, folder)
-    if not os.path.isdir(path):
-        return 0
-    return len([n for n in os.listdir(path) if os.path.isfile(os.path.join(path, n))])
 
 
 def write(path, text):
@@ -58,13 +76,13 @@ def write(path, text):
         fh.write(text)
 
 
-def resumo(data, root, entry):
+def resumo(data, entry):
     eid = entry["id"]
     defs = {d["chave"]: d["nome"] for d in data["medicoes_definicoes"]}
     lines = []
     lines.append("# %s — %s" % (eid, entry["titulo"]))
     lines.append("")
-    lines.append("> Gerado de `dados/progresso.json` (esquema 1.0.0). Para alterar, edite o JSON e rode `ferramentas/gerar_publico.py`; não edite este arquivo.")
+    lines.append("> Gerado de `docs/data/oot-dsi-progress.json` (esquema 1.0.0). Para alterar, edite `dados/progresso.json` do projeto, rode `ferramentas/gerar_recorte_publico.py` e depois este script; não edite este arquivo.")
     lines.append("")
     if entry["tipo"] == "correcao":
         lines.append("**Correção dentro da entrega %s.** Não conta como avanço independente." % entry.get("entrega_pai"))
@@ -79,10 +97,11 @@ def resumo(data, root, entry):
         lines.append("| Detalhe de estado | %s |" % entry["subestado"])
     lines.append("| Build | %s |" % entry["build"]["identificador"])
     lines.append("| Commit | %s |" % (entry["build"]["commit"] or "não disponível (árvore sem histórico git)"))
+    lines.append("| Validado em | %s |" % entry["validacao"]["ambiente"])
     lines.append("")
     lines.append("## Resumo")
     lines.append("")
-    lines.append(entry["resumo_publico"])
+    lines.append(entry["resumo"])
     lines.append("")
     lines.append("## Estudo de engenharia")
     lines.append("")
@@ -95,13 +114,13 @@ def resumo(data, root, entry):
     lines.append("")
     lines.append("**Resultado.** " + estudo["resultado"])
     lines.append("")
-    lines.append("**Limitação.** " + estudo["limitacao"])
+    lines.append("**Limitação.** " + " ".join(entry["limitacoes"]))
     lines.append("")
 
     if entry.get("medicoes"):
         lines.append("## Medições")
         lines.append("")
-        lines.append("Ambiente padrão: melonDS 1.1, modo DS, 67 MHz. A condição de cada linha está declarada; valores de emulador não são medição de hardware físico.")
+        lines.append("A condição de cada linha está declarada no arquivo. Salvo indicação contrária, o ambiente é melonDS 1.1, modo DS, 67 MHz — ou o computador, nas entregas testadas fora do emulador. Valor de emulador não é medição de hardware físico.")
         lines.append("")
         lines.append("| Indicador | Valor | Condição | Método |")
         lines.append("|---|---|---|---|")
@@ -149,31 +168,43 @@ def resumo(data, root, entry):
 
     lines.append("## Evidências")
     lines.append("")
-    folders = entry.get("evidencias", [])
-    if folders:
-        for folder in folders:
-            count = evidence_counts(root, folder)
-            lines.append("- [`%s/`](../../../%s/) — %d arquivo(s), com SHA-256 em [`evidencias/MANIFESTO.csv`](../../../evidencias/MANIFESTO.csv)." % (folder, folder, count))
+    published = [v for v in entry.get("evidencias", []) if v["arquivos_publicados"]]
+    if published:
+        for evidence in published:
+            for name in evidence["arquivos_publicados"]:
+                lines.append("- ![](%s)" % ("../../" + name))
+                lines.append("")
+                lines.append("  [`%s`](../../%s) — captura desta entrega, com hash em [`evidencias/publicas/MANIFESTO.csv`](../../../evidencias/publicas/MANIFESTO.csv)." % (name, name))
+            lines.append("- A pasta `%s` fica no projeto de desenvolvimento; o conjunto completo não é distribuído por este repositório." % evidence["referencia"])
     else:
-        lines.append("Sem captura recuperada. Os valores desta entrega continuam transcritos no histórico técnico, com o mesmo `%s`." % eid)
+        for evidence in entry.get("evidencias", []):
+            lines.append("- `%s` — %s" % (evidence["referencia"], evidence["observacao"]))
+        if not entry.get("evidencias"):
+            lines.append("Sem pasta de evidência. Os valores desta entrega continuam transcritos no histórico técnico, com o mesmo `%s`." % eid)
     lines.append("")
 
     lines.append("## Onde ler o estudo completo")
     lines.append("")
     for ref in entry["referencias_historicos"]:
         label = ref.get("rotulo_publico") or ref["secao"]
-        lines.append("- [`%s`](../../../%s), seção \"%s\"." % (ref["arquivo"], ref["arquivo"], label))
+        lines.append("- Histórico técnico do projeto: `%s`, seção \"%s\"." % (ref["arquivo"], label))
     lines.append("")
     return "\n".join(lines)
 
 
 def timeline(data):
+    dates = sorted({e["data"] for e in data["entregas"]})
     lines = []
     lines.append("# Linha do tempo")
     lines.append("")
-    lines.append("> Gerado de `dados/progresso.json`. Não editar à mão.")
+    lines.append("> Gerado de `docs/data/oot-dsi-progress.json`. Não editar à mão.")
     lines.append("")
-    lines.append("O `OTD-NNN` é atribuído na ordem de registro do histórico, não pela ordem de execução. Quase todas as entregas foram registradas em 2026-10-27; a data identifica o dia do registro, e a coluna *Fase* identifica a área de trabalho. Uma correção (`OTD-025`) aparece sob a entrega que corrige e não conta como avanço independente.")
+    lines.append(
+        "O `OTD-NNN` é atribuído na ordem de registro do histórico, não pela ordem de execução. "
+        "As %d entregas vão de %s a %s; a data identifica o dia do registro, e a coluna *Fase* identifica a área de trabalho. "
+        "Uma correção (`OTD-025`) aparece sob a entrega que corrige e não conta como avanço independente."
+        % (len(data["entregas"]), dates[0], dates[-1])
+    )
     lines.append("")
     lines.append("| Data | ID | Frente | Fase | Entrega | Estado |")
     lines.append("|---|---|---|---|---|---|")
@@ -192,7 +223,7 @@ def estado_e_limites(data):
     lines = []
     lines.append("# Estado e limites")
     lines.append("")
-    lines.append("> Gerado de `dados/progresso.json`. Não editar à mão.")
+    lines.append("> Gerado de `docs/data/oot-dsi-progress.json`. Não editar à mão.")
     lines.append("")
     lines.append("## Vocabulário de estado")
     lines.append("")
@@ -200,7 +231,7 @@ def estado_e_limites(data):
     lines.append("")
     lines.append("| Estado | Significado |")
     lines.append("|---|---|")
-    for key in ("planejado", "em_implementacao", "implementado", "testado_computador", "testado_emulador", "testado_hardware", "parcial_bloqueado_regressao"):
+    for key in data["estados"]:
         lines.append("| %s | %s |" % (data["estados"][key]["rotulo"], data["estados"][key]["descricao"]))
     lines.append("")
     lines.append("## Estado por entrega")
@@ -208,9 +239,9 @@ def estado_e_limites(data):
     lines.append("| ID | Entrega | Frente | Estado | Limite registrado |")
     lines.append("|---|---|---|---|---|")
     for e in data["entregas"]:
-        limit = e["estudo_engenharia"]["limitacao"]
         lines.append("| [%s](resumos/%s.md) | %s | %s | %s | %s |" % (
-            e["id"], e["id"], e["titulo"], FRONT_LABEL[e["frente"]], STATE_LABEL[e["estado"]], limit))
+            e["id"], e["id"], e["titulo"], FRONT_LABEL[e["frente"]], STATE_LABEL[e["estado"]],
+            " ".join(e["limitacoes"]).replace("\n", " ").replace("|", "\\|")))
     lines.append("")
     lines.append("## Pendências e regressões conhecidas")
     lines.append("")
@@ -224,76 +255,52 @@ def estado_e_limites(data):
     lines.append("")
     lines.append("## O que ainda não existe")
     lines.append("")
-    lines.append("Uma sala renderizada não é o jogo. Cada sistema abaixo continua com estado próprio, e nenhum deles está coberto por uma entrega registrada:")
+    lines.append("Uma sala renderizada, um Link que anda e uma porta que troca de sala não são o jogo. Cada sistema abaixo continua sem entrega registrada:")
     lines.append("")
-    for item in (
-        "atores e objetos de cena em tempo de execução",
-        "colisão e física do jogador",
-        "câmera de jogo (a câmera presa é instrumento de medida, não a câmera do OoT)",
-        "animação e esqueleto",
-        "áudio",
-        "progressão, portas, transições de sala e salvamento",
-        "segunda sala e carregamento de cena completo",
-        "HUD e inventário 2D na tela de baixo",
-        "execução em DSi físico",
-    ):
+    for item in NAO_EXISTE:
         lines.append("- " + item)
     lines.append("")
-    lines.append("O estado do motor também é parcial: ciclo 1 do combiner, fontes ENV/PRIMITIVE, `G_TT_IA16`, texturas retangulares, wrap/mask/shift e recorte em `x = ±w` / `y = ±w` não estão cobertos. A lista detalhada fica em [`HISTORICO_MOTOR_GRAFICO.md`](../../HISTORICO_MOTOR_GRAFICO.md), seção \"Onde o motor está\".")
+    lines.append("O estado do motor também é parcial:")
+    lines.append("")
+    for item in MOTOR_PARCIAL:
+        lines.append("- " + item)
+    lines.append("")
+    lines.append("A lista detalhada fica em `HISTORICO_MOTOR_GRAFICO.md`, seção \"Onde o motor está\" — a cópia deste repositório cobre as entregas registradas até 2026-10-27; a numeração vigente está no recorte estruturado.")
     lines.append("")
     return "\n".join(lines)
 
 
-def pick_captures(root, folder, limit=3):
-    path = os.path.join(root, folder)
-    if not os.path.isdir(path):
-        return []
-    names = sorted(n for n in os.listdir(path) if n.lower().endswith(".png"))
-    chosen = []
-
-    def take(predicate, count):
-        for name in names:
-            if len(chosen) >= limit or count <= 0:
-                return
-            if name in chosen:
-                continue
-            if predicate(name):
-                chosen.append(name)
-                count -= 1
-
-    take(lambda n: n.endswith("_topbig.png"), 2)
-    take(lambda n: n.endswith("_top.png"), 1)
-    take(lambda n: not n.endswith(("_hud.png", "_fps.png", "_tail.png", "_top.png", "_topbig.png")), 1)
-    return chosen
-
-
-def gallery(data, root):
+def gallery(data):
+    published = data["evidencias_publicadas"]
     lines = []
     lines.append("# Galeria")
     lines.append("")
-    lines.append("> Gerado de `dados/progresso.json` e `evidencias/MANIFESTO.csv`. As imagens são capturas reais do melonDS 1.1 em modo DS, não renderizações ilustrativas e não hardware físico.")
+    lines.append("> Gerado de `docs/data/oot-dsi-progress.json`, campo `evidencias_publicadas`. As imagens são capturas reais do melonDS 1.1 em modo DS, não renderizações ilustrativas e não hardware físico.")
     lines.append("")
-    lines.append("Cada imagem mostra o painel 3D do DS (ou a janela completa) em um estado de teste. Uma captura prova o que estava na tela naquele build e naquela câmera; não prova que o jogo inteiro funciona. O conjunto completo, com hash de cada arquivo, está em [`evidencias/`](../../evidencias/).")
+    lines.append(
+        "São %d capturas, e elas são tudo o que este repositório publica: cada uma mostra o painel 3D do DS "
+        "(ou a janela completa) em um build e uma câmera declarados. Uma captura prova o que estava na tela "
+        "naquele quadro, não que o jogo inteiro funciona. O conjunto de evidências de cada entrega fica no "
+        "projeto de desenvolvimento, com hash em `evidencias/publicas/MANIFESTO.csv`." % len(published)
+    )
     lines.append("")
-    for e in data["entregas"]:
-        folders = e.get("evidencias", [])
-        if not folders:
-            continue
-        lines.append("## %s — %s" % (e["id"], e["titulo"]))
+    for item in published:
+        lines.append("## %s — `%s`" % (item["entrega"], os.path.basename(item["arquivo_site"])))
         lines.append("")
-        for folder in folders:
-            chosen = pick_captures(root, folder)
-            if not chosen:
-                continue
-            for name in chosen:
-                rel = "../../" + folder + "/" + name
-                lines.append("![%s — %s](%s)" % (e["id"], name, rel))
-                lines.append("")
-                lines.append("*`%s` — captura de emulador; condição e leitura estão no [resumo da entrega](resumos/%s.md).*" % (name, e["id"]))
-                lines.append("")
-            count = evidence_counts(root, folder)
-            lines.append("Pasta completa: [`%s/`](../../%s/) (%d arquivo(s))." % (folder, folder, count))
-            lines.append("")
+        lines.append("![%s — %s](../%s)" % (item["entrega"], item["tag"], item["arquivo_site"]))
+        lines.append("")
+        lines.append(item["descricao"])
+        lines.append("")
+        lines.append("| Campo | Valor |")
+        lines.append("|---|---|")
+        lines.append("| Cena | %s |" % item["cena"])
+        lines.append("| Câmera | %s |" % item["camera"])
+        lines.append("| Build | %s |" % item["build"])
+        lines.append("| Configuração | %s |" % item["configuracao"])
+        lines.append("| Leitura | %s |" % item["leitura"])
+        lines.append("")
+        lines.append("Detalhes da entrega em [resumo de %s](resumos/%s.md)." % (item["entrega"], item["entrega"]))
+        lines.append("")
     return "\n".join(lines)
 
 
@@ -310,12 +317,13 @@ def main():
     public = os.path.join(root, "docs", "publico")
 
     for entry in data["entregas"]:
-        write(os.path.join(public, "resumos", entry["id"] + ".md"), resumo(data, root, entry))
+        write(os.path.join(public, "resumos", entry["id"] + ".md"), resumo(data, entry))
     write(os.path.join(public, "linha-do-tempo.md"), timeline(data))
     write(os.path.join(public, "estado-e-limites.md"), estado_e_limites(data))
-    write(os.path.join(public, "galeria.md"), gallery(data, root))
+    write(os.path.join(public, "galeria.md"), gallery(data))
 
-    print("gerados: %d resumos + linha-do-tempo, estado-e-limites, galeria" % len(data["entregas"]))
+    print("gerados: %d resumos + linha-do-tempo, estado-e-limites e galeria com %d capturas publicadas"
+          % (len(data["entregas"]), len(data["evidencias_publicadas"])))
     return 0
 
 

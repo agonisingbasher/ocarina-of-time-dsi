@@ -20,7 +20,7 @@ dados/               progresso estruturado e esquema JSON versionado
 docs/                site público publicado pelo GitHub Pages
 docs/publico/        síntese pública por entrega
 evidencias/publicas/ seis capturas publicadas na apresentação
-HISTORICO_*.md       históricos técnicos completos do motor e do jogo
+HISTORICO_*.md       cópia dos históricos técnicos do motor e do jogo, até a fase 12
 ```
 
 A apresentação pública fica em [`docs/`](docs/), publicada em
@@ -55,7 +55,7 @@ O `Makefile` espera o ambiente do devkitPro e gera `OcarinaDsi.nds` apenas quand
 
 ## Estado e medições
 
-O estado vigente, as limitações e as retratações estão em `docs/publico/` e `dados/progresso.json`. Cada entrega usa um identificador estável `OTD-NNN`; uma conclusão corrigida permanece registrada em vez de ser apagada.
+O estado vigente, as limitações e as retratações estão em `docs/publico/` e `dados/progresso.json` — 72 entregas, de `OTD-001` a `OTD-072`. Cada entrega usa um identificador estável `OTD-NNN`; uma conclusão corrigida permanece registrada em vez de ser apagada. Os `HISTORICO_*.md` desta árvore são cópia e param na fase 12: o registro corrente é o JSON, e a página diz isso em vez de apontar para prosa desatualizada.
 
 Os indicadores não são intercambiáveis: FPS, taxa de simulação de 20 Hz, tempo de quadro, tempo de render e custo de submissão medem coisas diferentes. As comparações A/B registram cena, câmera, build, configuração, emulador e relógio.
 

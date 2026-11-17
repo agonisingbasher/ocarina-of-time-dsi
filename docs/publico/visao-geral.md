@@ -17,18 +17,24 @@ As duas frentes se encontram no momento em que uma display list real do jogo che
 
 ## O que já foi demonstrado
 
-Tudo abaixo foi medido no **melonDS 1.1, modo DS, 67 MHz** — emulador, não hardware físico:
+59 das 72 entregas registradas terminaram com captura no **melonDS 1.1, modo DS, 67 MHz** — emulador, não hardware físico — e 13 fecharam apenas com validação no computador:
 
 - o ambiente do DSi foi sondado: modo, clock, heap, RAM, SD e duas telas;
-- uma sala real do jogo, `market_day_room_0`, foi desenhada com 510 triângulos;
-- uma sala texturizada, `Bmori1_room_0`, foi desenhada com 646 triângulos, 75 imagens e 2 paletas;
+- uma sala real do jogo, `market_day_room_0`, foi desenhada com 510 triângulos, e uma sala texturizada, `Bmori1_room_0`, com 646 triângulos, 75 imagens e 2 paletas;
 - o pontilhado colorido dessa sala foi diagnosticado como minificação, não como erro de paleta;
-- uma cadeia de mip construída no bake reduziu o grão do painel de 13,28 para 9,09 (−32 %) ao custo de +17,5 ms de tempo de render;
-- o custo da cadeia foi atribuído à aritmética por face, não à troca de textura, e uma tabela de recíprocos devolveu 2,1 ms sem alterar um pixel do painel.
+- uma cadeia de mip por triângulo foi construída no bake, com cor de vértice no combiner e lerp de duas texturas em segunda passada;
+- o Link sai dos arquivos do próprio cartucho: esqueleto de 21 juntas, 89 *frames* de espera e 29 de caminhada lidos do arquivo, não de constantes inventadas;
+- há fatia caminhável: o corpo para antes da parede, desliza nela, sobe degraus e a câmera de jogo não atravessa o muro — a colisão estática da cena é lida e usada por colisão, câmera e lógica de 20 Hz;
+- duas salas de `Bmori1` coexistem, com porta `En_Door` de seis estados, porta de madeira animada com as duas faces originais e travessia exercitada de ida e volta no emulador com o cartão DLDI montado;
+- atores de levantamento entram na tela: Talon com 422 faces batendo com o arquivo e Saria desenhando 459 triângulos sobre o fundo da sala;
+- luz ambiente, duas luzes direcionais da cena, descarte de faces pelas listas originais, `G_CullDL` e câmeras originais alternando no visualizador;
+- 101 cenas e 388 salas conferidas no computador por um comando que prepara salas, fundos e profundidades, recusando imagens corrompidas ou desatualizadas.
+
+O preço dessas coisas também está medido. Na vista comparada, o quadro caiu de 154,8 ms para 50,1 ms (19–20 FPS na sala inicial de `Bmori1`, 65 ms de média na travessia com as duas salas desenhadas, 53 ms depois da pré-carga da sala vizinha). Um ator desenhado custa 39,02 ms por quadro no caminho atual. A cadeia de mip, no binário atual, custa +20,6 ms de render na sala 0 — 17,3 % do render enviado — e compra 0,40 unidades de grão (7,70 → 7,27, ou −5,6 %); o número de outubro (+16,4 ms, 34 % do render, −31 % de grão) está retratado em OTD-044.
 
 ## O que ainda não existe
 
-Uma sala renderizada não é o jogo. Atores, colisão, câmera de jogo, animação, áudio, progressão, portas, transições de sala, salvamento, segunda sala, HUD/inventário na tela de baixo e execução em DSi físico continuam fora do escopo entregue. O estado de cada sistema está em [estado-e-limites.md](estado-e-limites.md).
+Uma sala renderizada, um Link que anda e uma porta que troca de sala não são o jogo. Continua sem entrega registrada: o sistema geral de atores e objetos em tempo de execução (IA, interações, diálogos, drops, eventos persistentes), as ações completas do jogador (combate, inimigos, itens, natação, escalada, estados de dano), o áudio, o HUD de jogo com textos, menus, mapa, ocarina e inventário, salvar e carregar, e a campanha com masmorras, chefes e cutscenes carregadas pelo fluxo original. Nenhum DSi físico foi testado. O estado de cada sistema está em [estado-e-limites.md](estado-e-limites.md), e a meta de 30 FPS (45 onde a cadência de 60 Hz permitir, com a lógica a 20 Hz) é critério de aceite do plano — nenhum build mediu essa meta no alvo.
 
 ## O que este projeto não afirma
 

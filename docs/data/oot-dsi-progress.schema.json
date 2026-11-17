@@ -255,7 +255,8 @@
             "properties": {
               "id": { "type": "string" },
               "descricao": { "type": "string" },
-              "estado": { "enum": ["corrigido", "pendente", "regressao_conhecida"] }
+              "estado": { "enum": ["corrigido", "pendente", "regressao_conhecida"] },
+              "evidencia": { "type": "array", "items": { "type": "string" } }
             }
           }
         },
@@ -303,7 +304,7 @@
       "required": ["referencia", "publicada_no_site", "arquivos_publicados", "observacao"],
       "additionalProperties": false,
       "properties": {
-        "referencia": { "type": "string", "pattern": "^evidencias/OTD-[0-9]{3}$" },
+        "referencia": { "type": "string", "pattern": "^evidencias/[A-Za-z0-9][A-Za-z0-9._-]*$" },
         "publicada_no_site": { "type": "boolean" },
         "arquivos_publicados": { "type": "array", "items": { "type": "string" } },
         "observacao": { "type": "string" }
@@ -311,7 +312,7 @@
     },
     "medicao": {
       "type": "object",
-      "required": ["indicador", "valor", "unidade", "condicao", "metodo", "observacao"],
+      "required": ["indicador", "valor", "unidade", "condicao", "metodo"],
       "additionalProperties": false,
       "properties": {
         "indicador": {
@@ -321,6 +322,7 @@
             "tempo_quadro_ms",
             "tempo_render_ms",
             "tempo_submissao_ms",
+            "tempo_animacao_ms",
             "grao",
             "contagem",
             "percentual",
@@ -342,6 +344,7 @@
           }
         },
         "metodo": { "type": "string" },
+        "evidencia": { "type": "array", "items": { "type": "string" } },
         "observacao": { "type": "string" }
       }
     },
@@ -360,7 +363,7 @@
       ],
       "additionalProperties": false,
       "properties": {
-        "arquivo_site": { "type": "string", "pattern": "^assets/oot-dsi/.+\\.png$" },
+        "arquivo_site": { "type": "string", "pattern": "^assets/[a-z0-9.-]+\\.png$" },
         "entrega": { "type": "string", "pattern": "^OTD-[0-9]{3}$" },
         "tag": { "type": "string" },
         "descricao": { "type": "string" },
