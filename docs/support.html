@@ -25,7 +25,7 @@
       <h1 data-i18n="suTitle">Apoiar os<br><span>Futuros Projetos.</span></h1>
       <p data-i18n="suLead">Contribua com qualquer valor para ajudar os próximos estudos, jogos e experiências a continuarem crescendo.</p>
       <div class="pix">
-        <img src="assets/pix-support-qr.svg" alt="QR Code Pix para apoiar os futuros projetos" data-i18n-alt="suQrAlt">
+        <img src="assets/pix-support-qr.png" alt="QR Code Pix para apoiar os futuros projetos" data-i18n-alt="suQrAlt">
         <div>
           <p class="eyebrow" data-i18n="suPixTag">PIX · VALOR LIVRE</p>
           <p data-i18n="suPixText">Escaneie o QR Code no app do seu banco ou copie a chave Pix.</p>
@@ -126,7 +126,7 @@ window.pageTranslations = {
     try {
       document.execCommand("copy");
     } catch (error) {
-      code.focus();
+      area.blur();
     }
     document.body.removeChild(area);
   }
